@@ -88,7 +88,7 @@ In the index 0 broker (the first in the broker.toml that you shelled into):
 ```bash
 cd ~/usernetes
 
-# This needs to be run by the user again in thes shell
+# This needs to be run by the user again in the shell
 /usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
 /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 sudo chown -R $USER /home/ubuntu
@@ -111,7 +111,7 @@ flux exec -x 0 -r all flux filemap get -C /home/ubuntu/usernetes
 ```bash
 cd ~/usernetes
 
-# This needs to be run by the user again in thes shell
+# This needs to be run by the user again in the shell
 /usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
 /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 sudo chown -R $USER /home/ubuntu
