@@ -76,44 +76,66 @@ You can look at the startup script logs like this if you need to debug.
 $ cat /var/log/cloud-init-output.log
 ```
 
-That's it. Enjoy!
-
 #### Start Usernetes
 
-This is currently manual, and I haven't found a way to automate it - cloud init cannot run these commands.
+This is currently manual, and we need a better approach to automate it.
 
 ##### Control Plane
 
-Here is setup:
+Let's first bring up the control plane, and we will copy the `join-command` to each node.
+In the index 0 broker (the first in the broker.toml that you shelled into):
 
 ```bash
+cd ~/usernetes
+
+# This needs to be run by the user again in thes shell
 /usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
 /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 sudo chown -R $USER /home/ubuntu
 dockerd-rootless-setuptool.sh install
 docker run hello-world
 
-cd ~/usernetes
+# start the control plane
 ./start-control-plane.sh
+```
+
+Then with flux running, send to the other nodes.
+
+```bash
 flux filemap map -C /home/ubuntu/usernetes join-command
-flux exec -x 0 -r all flux filemap get -C /home/ubuntu/usernetes    
+flux exec -x 0 -r all flux filemap get -C /home/ubuntu/usernetes
 ```
 
 ##### Worker Nodes
 
 ```bash
+cd ~/usernetes
+
+# This needs to be run by the user again in thes shell
 /usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
 /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 sudo chown -R $USER /home/ubuntu
 dockerd-rootless-setuptool.sh install
 docker run hello-world
 
-cd ~/usernetes
+# start the worker (to hopefully join)
 ./start-worker.sh
 ```
 
+Note that once when I ran the above, it never joined.
 Check (from the first node) that usernetes is running:
 
+```bash
+export KUBECONFIG=/home/ubuntu/usernetes/kubeconfig 
+kubectl get nodes
 ```
-kubectl get pods
+```console
+$ kubectl  get nodes
+NAME                      STATUS   ROLES           AGE     VERSION
+u7s-i-04ad9c3a65683079e   Ready    <none>          37s     v1.29.1
+u7s-i-0960589d5a41db8fd   Ready    control-plane   3m58s   v1.29.1
 ```
+
+Note - for the above to work (automated) I think we need the container environment tool
+I used for the Qvirt setup (that I didn't install here). It allows running these headlessly,
+but not sure, I'm out of steam for this tonight.
