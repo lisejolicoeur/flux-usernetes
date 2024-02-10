@@ -16,16 +16,18 @@ of the scripts in [build-images](build-images). For example, for the top AMI bel
 - install-flux.sh
 - install-usernetes.sh
 - install-singularity.sh
-- install-lammps.sh
+- install-lammps.sh 
 
-And this generated:
+The scripts have been modified for ARM, since AMD64 doesn't really work with the limited network options (we need the HPC instances). And this generated:
 
+- flux-ubuntu-usernetes-lammps-singularity-arm-efa: `ami-088dc4371888c26cb` the same but with those things!
 - flux-ubuntu-usernetes: `ami-023a3bf52034d3faa` has flux, usernetes, lammps, and singularity
 
+Nothing really works on AWS without EFA so probably we will use the first (top).
 
 ### Deploy with Terraform
 
-Once you have images, choose a directory under [examples](examples) to deploy from:
+Once you have images, we deploy!
 
 ```bash
 $ cd tf
@@ -78,7 +80,8 @@ $ cat /var/log/cloud-init-output.log
 
 #### Start Usernetes
 
-This is currently manual, and we need a better approach to automate it.
+This is currently manual, and we need a better approach to automate it. I think we can use `machinectl` with a uid,
+but haven't tried this yet.
 
 ##### Control Plane
 
@@ -108,6 +111,9 @@ flux exec -x 0 -r all flux filemap get -C /home/ubuntu/usernetes
 
 ##### Worker Nodes
 
+**Important** your nodes need to be on the same subnet to see one another. The VPC and load balancer will require you
+to create 2+, but you don't have to use them all.
+
 ```bash
 cd ~/usernetes
 
@@ -122,20 +128,42 @@ docker run hello-world
 ./start-worker.sh
 ```
 
-Note that once when I ran the above, it never joined.
 Check (from the first node) that usernetes is running:
 
 ```bash
-export KUBECONFIG=/home/ubuntu/usernetes/kubeconfig 
 kubectl get nodes
 ```
+
+You should have a full set of usernetes node and flux alongside.
+
 ```console
-$ kubectl  get nodes
+ubuntu@i-059c0b325f91e5503:~$ kubectl  get nodes
 NAME                      STATUS   ROLES           AGE     VERSION
-u7s-i-04ad9c3a65683079e   Ready    <none>          37s     v1.29.1
-u7s-i-0960589d5a41db8fd   Ready    control-plane   3m58s   v1.29.1
+u7s-i-011e558c998efa7c9   Ready    <none>          67s     v1.29.1
+u7s-i-049a938f182420a7b   Ready    <none>          36s     v1.29.1
+u7s-i-059c0b325f91e5503   Ready    control-plane   7m35s   v1.29.1
+u7s-i-0a5b50dbcf4754bb1   Ready    <none>          3m8s    v1.29.1
+u7s-i-0cb613bda0f908a84   Ready    <none>          5m17s   v1.29.1
+u7s-i-0cdc86ed08f06dd11   Ready    <none>          2m34s   v1.29.1
+u7s-i-0d58764791da6b74e   Ready    <none>          4m25s   v1.29.1
+```
+```console
+ubuntu@i-059c0b325f91e5503:~$ flux resource list
+     STATE NNODES   NCORES    NGPUS NODELIST
+      free      7       56        0 i-059c0b325f91e5503,i-0cb613bda0f908a84,i-0d58764791da6b74e,i-0a5b50dbcf4754bb1,i-0cdc86ed08f06dd11,i-011e558c998efa7c9,i-049a938f182420a7b
+ allocated      0        0        0 
+      down      0        0        0 
 ```
 
-Note - for the above to work (automated) I think we need the container environment tool
-I used for the Qvirt setup (that I didn't install here). It allows running these headlessly,
-but not sure, I'm out of steam for this tonight.
+## Debugging
+
+Here are some debugging tips for network. Ultimately the fix was requesting one subnet
+to be used by the autoscaling group (and I didn't need these) but I want to preserve
+them from our conversation.
+
+- Look at routing between subnets (e.g., create two instances and try curl/ping)
+- Look at launch template configs for launch template - figure out if something looks wrong and trace back to terraform
+- Try the [Reachability analyzer](https://console.aws.amazon.com/networkinsights/home#ReachabilityAnalyzer)
+  - Create an analyze path, sources and destinations 
+- eips - elastic ips? (default is 5, but can request quota higher)
+- have the node groups across AZs but have it launch everything in one AZ by specifying the subset we want for the actual instances to launch in (this was it!)

@@ -56,7 +56,8 @@ echo "DONE modprobe"
 
 echo "START kubectl"
 cd /tmp
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
+# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x ./kubectl
 sudo mv ./kubectl /usr/bin/kubectl
 echo "DONE kubectl"
@@ -70,9 +71,12 @@ echo "done installing docker"
 # Note that broker.toml is written in the startup script now
 # Along with the /etc/flux/system/R
 sudo mkdir -p /etc/flux/system
-echo "Creating flux resources"
 
-# TODO STOPPED HERE
+# IMPORTANT: we need to run this when installing docker
+# https://github.com/docker/docs/issues/14491
+sudo apt install -y systemd-container
+
+sudo chown -R ubuntu /home/ubuntu
 echo "Setting up usernetes"
 
 echo "export PATH=/usr/bin:$PATH" >> ~/.bashrc
@@ -130,9 +134,9 @@ make kubeadm-init
 sleep 5
 make install-flannel
 make kubeconfig
-export KUBECONFIG=$HOME/usernetes/kubeconfig
+export KUBECONFIG=/home/ubuntu/usernetes/kubeconfig
 make join-command
-echo "export KUBECONFIG=$HOME/usernetes/kubeconfig" >> ~/.bashrc
+echo "export KUBECONFIG=/home/ubuntu/usernetes/kubeconfig" >> ~/.bashrc
 EOF
 chmod +x ./start-control-plane.sh
 fi
@@ -155,4 +159,8 @@ fi
 
 echo "Done installing docker user"
 sudo chown ubuntu /etc/flux/system/curve.cert
+sudo chown -R ubuntu /home/ubuntu
 
+# Note that I had to change the Dockerfile base image to be an arm variant
+# docker.io/kindest/node:v1.29.1@sha256:a0cc28af37cf39b019e2b448c54d1a3f789de32536cb5a5db61a49623e527144
+# cp Dockerfile Dockerfile.amd64

@@ -31,7 +31,7 @@ done
 # Generate the flux resource file
 # This is just in case it exists
 sudo rm -rf /etc/flux/system/R
-flux R encode --hosts=$NODELIST > R
+flux R encode --hosts=$NODELIST --local > R
 sudo mv R /etc/flux/system/R
 sudo chown ubuntu /etc/flux/system/R
 
@@ -70,7 +70,7 @@ curve_cert = "/etc/flux/system/curve.cert"
 
 # ubuntu does not have eth0
 default_port = 8050
-default_bind = "tcp://ens3:%p"
+default_bind = "tcp://${ethernet_device}:%p"
 default_connect = "tcp://%h.ec2.internal:%p"
 
 # Rank 0 is the TBON parent of all brokers unless explicitly set with
@@ -157,6 +157,9 @@ sudo chown -R $USER /home/ubuntu
 # These won't take from the build
 echo "export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock" >> /home/ubuntu/.bashrc
 echo "export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run" >> /home/ubuntu/.bashrc
+echo "export FI_EFA_USE_DEVICE_RDMA=1" >> /home/ubuntu/.bashrc
+echo "export RDMAV_FORK_SAFE=1" >> /home/ubuntu/.bashrc
+echo "export LD_LIBRARY_PATH=/opt/amazon/openmpi/lib:/opt/amazon/efa/lib" >> /home/ubuntu/.bashrc
 
 # Not sure why it's not taking my URI request above!
 export FLUX_URI=local:///home/ubuntu/run/flux/local
@@ -178,54 +181,3 @@ cd /home/ubuntu
 # this needs to be run interactively.
 sudo chown -R $USER /home/ubuntu
 cd /home/ubuntu/usernetes
-rm -rf start-control-plane.sh start-worker.sh
-
-# Recreate the start scripts
-cat <<EOF | tee ./start-control-plane.sh
-#!/bin/bash
-
-# This needs to be run by the user again
-/usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
-/usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
-sudo chown -R $USER /home/ubuntu
-dockerd-rootless-setuptool.sh install
-docker run hello-world
-
-# Go to usernetes home
-cd ~/usernetes
-
-# This is logic for the lead broker (we assume this one)
-make up
-
-sleep 10
-make kubeadm-init
-sleep 5
-make install-flannel
-make kubeconfig
-export KUBECONFIG=$HOME/usernetes/kubeconfig
-make join-command
-echo "export KUBECONFIG=$HOME/usernetes/kubeconfig" >> ~/.bashrc
-EOF
-chmod +x ./start-control-plane.sh
-
-cat <<EOF | tee ./start-worker.sh
-#!/bin/bash
-
-# This needs to be run by the user again
-/usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
-/usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
-sudo chown -R $USER /home/ubuntu
-dockerd-rootless-setuptool.sh install
-docker run hello-world
-
-# Go to usernetes home
-cd ~/usernetes
-
-make up
-sleep 5
-
-# This assumes join-command is already here
-make kubeadm-join
-EOF
-chmod +x ./start-worker.sh
-sudo chown -R $USER /home/ubuntu
