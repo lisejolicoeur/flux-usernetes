@@ -100,14 +100,14 @@ kubectl delete -f minicluster.yaml --wait=true
 And now let's automate the entire thing.
 
 ```bash
-for i in $(seq 1 20); do 
+for i in $(seq 11 20); do 
     echo "Running iteration ${i}"
     kubectl apply -f minicluster.yaml
     sleep 10
     pod=$(kubectl get pods -o json | jq -r .items[0].metadata.name)
     echo "Lead broker pod is ${pod}"
     # Wait for init to finish and pod to initialize
-    kubectl wait --for=condition=ready --timeout=120s pod/${pod}
+    kubectl wait --for=condition=ready --timeout=200s pod/${pod}
     sleep 10
     kubectl get pods -o wide
     # This waits for mnist to finish (streaming the log)
@@ -118,7 +118,11 @@ for i in $(seq 1 20); do
 done
 ```
 
+Note that I stopped here early around 10 or 11 because the instance was killed. My lead broker was killed shortly after and it was over - I never got to run the experiments below.
+
 ## 3. Mnist with Single Node (Bare Metal Flux) and Usernetes
+
+> Not run yet.
 
 This case should give us a better sense if the networking (between nodes) is the underlying issue that shows usernetes a lot slower. This is a proxy for just measuring networking directly with performance metrics. You should have the same setup as defined in step 1. to start. Let's make different directory, and launch with a different number of nodes. Note that we are updating the script to handle just one node:
 And now we can do a test run to get a time:

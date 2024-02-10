@@ -319,11 +319,13 @@ resource "aws_autoscaling_group" "autoscaling_group" {
   name               = "${local.name}-autoscaling-group"
   max_size           = local.min_size
   min_size           = local.max_size
-  health_check_type  = "ELB"
+  health_check_type  = "EC2"
+
+  # This is 25 hours
+  health_check_grace_period = 90000
   capacity_rebalance = false
 
   # Make this really large so we don't check soon :)
-  health_check_grace_period = 10000
   desired_capacity          = local.desired_size
   target_group_arns         = [aws_lb_target_group.target_group.arn]
 

@@ -17,6 +17,6 @@ spec:
     command: /bin/bash /launch.sh
     resources:
       limits:
-        cpu: "12"
+        cpu: "7"
       requests:
-        cpu: "12"
+        cpu: "7"

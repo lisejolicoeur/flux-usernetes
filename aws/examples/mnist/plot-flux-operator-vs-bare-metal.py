@@ -23,7 +23,7 @@ def get_parser():
     parser.add_argument(
         "--results",
         help="directory with raw results data",
-        default=os.path.join(here, "results", "flux-operator-vs-bare-metal"),
+        default=os.path.join(here, "results"),
     )
     parser.add_argument(
         "--out",
