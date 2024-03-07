@@ -75,6 +75,13 @@ i-012fe4a110e14da1b.ec2.internal
 i-0354d878a3fd6b017.ec2.internal
 ```
 
+Lammps should also run.
+
+```bash
+cd /home/ubuntu/lammps
+flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 2 -v y 2 -v z 2 -in ./in.reaxff.hns -nocite
+```
+
 You can look at the startup script logs like this if you need to debug.
 
 ```bash
@@ -93,23 +100,15 @@ In the index 0 broker (the first in the broker.toml that you shelled into):
 
 ```bash
 cd ~/usernetes
-
-# This needs to be run by the user again in the shell
-/usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
-/usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
-sudo chown -R $USER /home/ubuntu
-dockerd-rootless-setuptool.sh install
-docker run hello-world
-
-# start the control plane
 ./start-control-plane.sh
 ```
 
 Then with flux running, send to the other nodes.
 
 ```bash
-flux filemap map -C /home/ubuntu/usernetes join-command
-flux exec -x 0 -r all flux filemap get -C /home/ubuntu/usernetes
+# use these commands for newer flux
+flux archive create --mmap -C /home/ubuntu/usernetes join-command
+flux exec -x 0 -r all flux archive extract -C /home/ubuntu/usernetes
 ```
 
 ##### Worker Nodes
@@ -120,40 +119,29 @@ to create 2+, but you don't have to use them all.
 ```bash
 cd ~/usernetes
 
-# This needs to be run by the user again in the shell
-/usr/bin/dockerd-rootless-setuptool.sh uninstall -f 
-/usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
-sudo chown -R $USER /home/ubuntu
-dockerd-rootless-setuptool.sh install
-docker run hello-world
-
 # start the worker (to hopefully join)
 ./start-worker.sh
 ```
 
-Check (from the first node) that usernetes is running:
+Check (from the first node) that usernetes is running (your KUBECONFIG should be exported):
 
 ```bash
+. ~/.bashrc
 kubectl get nodes
 ```
 
 You should have a full set of usernetes node and flux alongside.
 
 ```console
-ubuntu@i-059c0b325f91e5503:~$ kubectl  get nodes
-NAME                      STATUS   ROLES           AGE     VERSION
-u7s-i-011e558c998efa7c9   Ready    <none>          67s     v1.29.1
-u7s-i-049a938f182420a7b   Ready    <none>          36s     v1.29.1
-u7s-i-059c0b325f91e5503   Ready    control-plane   7m35s   v1.29.1
-u7s-i-0a5b50dbcf4754bb1   Ready    <none>          3m8s    v1.29.1
-u7s-i-0cb613bda0f908a84   Ready    <none>          5m17s   v1.29.1
-u7s-i-0cdc86ed08f06dd11   Ready    <none>          2m34s   v1.29.1
-u7s-i-0d58764791da6b74e   Ready    <none>          4m25s   v1.29.1
+$ kubectl get nodes
+NAME                      STATUS   ROLES           AGE   VERSION
+u7s-i-0a7c8e4a2ddaffbe9   Ready    <none>          33s   v1.29.1
+u7s-i-0be1a2884b2873c22   Ready    control-plane   11m   v1.29.1
 ```
 ```console
-ubuntu@i-059c0b325f91e5503:~$ flux resource list
+$ flux resource list
      STATE NNODES   NCORES    NGPUS NODELIST
-      free      7       56        0 i-059c0b325f91e5503,i-0cb613bda0f908a84,i-0d58764791da6b74e,i-0a5b50dbcf4754bb1,i-0cdc86ed08f06dd11,i-011e558c998efa7c9,i-049a938f182420a7b
+      free      2       32        0 i-0be1a2884b2873c22,i-0a7c8e4a2ddaffbe9
  allocated      0        0        0 
       down      0        0        0 
 ```
