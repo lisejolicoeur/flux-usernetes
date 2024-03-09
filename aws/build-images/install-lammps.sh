@@ -27,7 +27,7 @@ cd build
 
 # Ensure we target mpi from efa installer (I think that is hooked into libfabric?)
 # Note you should NOT install using the aws MPI it WILL NOT WORK
-cmake ../cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DPKG_REAXFF=yes -DBUILD_MPI=yes -DPKG_OPT=yes -DFFT=FFTW3 -DCMAKE_PREFIX_PATH=/opt/amazon/efa -DCMAKE_PREFIX_PATH=/opt/amazon/openmpi5
+cmake ../cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DPKG_REAXFF=yes -DBUILD_MPI=yes -DPKG_OPT=yes -DFFT=FFTW3 -DCMAKE_PREFIX_PATH=/opt/amazon/efa -DCMAKE_PREFIX_PATH=/opt/amazon/openmpi
 
 # This is the vanilla command
 # cmake ../cmake -D PKG_REAXFF=yes -D BUILD_MPI=yes -D PKG_OPT=yes

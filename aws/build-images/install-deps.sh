@@ -9,8 +9,7 @@ sudo apt-get update && \
     sudo apt-get install -y apt-transport-https ca-certificates curl clang llvm jq apt-utils wget \
          libelf-dev libpcap-dev libbfd-dev binutils-dev build-essential make \
          linux-tools-common linux-tools-$(uname -r)  \
-         bpfcc-tools python3-pip git net-tools \
-         libfabric-dev libfabric-bin
+         bpfcc-tools python3-pip git net-tools
 
 # cmake is needed for flux now!
 export CMAKE=3.23.1

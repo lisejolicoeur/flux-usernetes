@@ -121,6 +121,7 @@ ExecStart=/bin/bash -c '\
   -Scontent.restore=auto'
 SyslogIdentifier=flux
 ExecReload=/usr/bin/flux config reload
+LimitMEMLOCK=infinity
 Restart=always
 RestartSec=5s
 RestartPreventExitStatus=42
@@ -157,8 +158,6 @@ sudo chown -R $USER /home/ubuntu
 # These won't take from the build
 echo "export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock" >> /home/ubuntu/.bashrc
 echo "export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run" >> /home/ubuntu/.bashrc
-echo "export FI_EFA_USE_DEVICE_RDMA=1" >> /home/ubuntu/.bashrc
-echo "export RDMAV_FORK_SAFE=1" >> /home/ubuntu/.bashrc
 echo "export LD_LIBRARY_PATH=/opt/amazon/efa/lib" >> /home/ubuntu/.bashrc
 
 # Not sure why it's not taking my URI request above!
