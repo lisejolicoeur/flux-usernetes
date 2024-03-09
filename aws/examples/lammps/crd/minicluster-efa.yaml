@@ -1,0 +1,26 @@
+apiVersion: flux-framework.org/v1alpha2
+kind: MiniCluster
+metadata:
+  name: flux-sample-efa
+spec:
+  size: 1
+  tasks: 16
+  logging:
+    quiet: true
+  flux:
+    container:
+      image: ubuntu:jammy
+      disable: true
+  containers:
+    - image: ghcr.io/rse-ops/lammps-efa:ubuntu-22.04@sha256:b7711c90880236c22977e5276a81de62c257a9aea71fbbf2ad247de08a9abb0a
+      workingDir: /opt/lammps/examples/reaxff/HNS
+      #command: sleep infinity
+      command: lmp -v x 1 -v y 1 -v z 1 -in ./in.reaxff.hns -nocite
+      resources:
+        limits:
+          vpc.amazonaws.com/efa: 1
+          cpu: "7"
+        requests:
+          cpu: "7"
+          vpc.amazonaws.com/efa: 1
+
