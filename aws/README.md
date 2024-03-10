@@ -36,16 +36,8 @@ Once you have images, we deploy!
 $ cd tf
 ```
 
-And then init and build:
-
-```bash
-$ make init
-$ make fmt
-$ make validate
-$ make build
-```
-
-And they all can be run with `make`:
+And then init and build. Note that this will run `init, fmt, validate` and `build` in one command.
+They all can be run with `make`:
 
 ```bash
 $ make
@@ -107,14 +99,20 @@ Then with flux running, send to the other nodes.
 
 ```bash
 # use these commands for newer flux
-flux archive create --mmap -C /home/ubuntu/usernetes join-command
-flux exec -x 0 -r all flux archive extract -C /home/ubuntu/usernetes
+flux archive create --name=join-command --mmap -C /home/ubuntu/usernetes join-command
+flux exec -x 0 -r all flux archive extract --name=join-command -C /home/ubuntu/usernetes
+```
+
+Note that I'm going to try a command that will be able to start the workers without needing to shell in.
+
+```bash
+cd /home/ubuntu/usernetes
+flux exec -x 0 -r all --dir /home/ubuntu/usernetes /bin/bash ./start-worker.sh
 ```
 
 ##### Worker Nodes
 
-**Important** your nodes need to be on the same subnet to see one another. The VPC and load balancer will require you
-to create 2+, but you don't have to use them all.
+**Important** This is how you'd start each manually, but you should not need to do this now with the final command about to run the same script across workers from the control plane. This is what I did before I figured that out. Also note that your nodes need to be on the same subnet to see one another. The VPC and load balancer will require you to create 2+, but you don't have to use them all. That information is embedded in the terraform config now.
 
 ```bash
 cd ~/usernetes

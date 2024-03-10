@@ -1,78 +1,25 @@
-# MPI Application with LAMMPS
+# OSU Benchmarks
   
-We want to look at the following four cases:
+Let's again compare bare metal to usernetes
 
 1. run on bare metal with lammps + flux
 2. run on bare metal with lammps in container + flux
 3. run in usernetes with same container and lammps
 4. run on bare metal (with and without container) but with usernetes running (to assess overhead)
-
-We are going to use our [tf setup](../tf) on (still) a small node type, but with 7 instances.
-
-- Using 6 nodes on a 7 node cluster
-- Problem size 32 x 8 x 16
-- index 0 (control plane and flux lead broker) will not run jobs.
  
-### Why are we looking at the four cases above?
-
-We expect to see that using usernetes is slower, and this would make sense because of the networking. Thus, we would want to say "with this setup you can get the best of both worlds - running your HPC apps (e.g., lammps) directly on the cluster, and then associated services alongside." The reason for having the lammps container vs. on bare metal is to demonstrate the transition between the three cases:
-
-```console
-[bare metal with flux] -> [container with flux] -> [usernetes with flux]
-```
-
-In our Star Trek cluster experiments (presented at FOSDEM) we found that usernetes was twice as slow.
-Note that for the above you will need to start the control plane and workers (connect) for each node.
-
-## Build Container
-
-The container in [docker](docker) is built to match the host. On the same host, do:
-
 ```bash
-docker build -t ghcr.io/rse-ops/lammps-efa:ubuntu-22.04 .
-docker push ghcr.io/rse-ops/lammps-efa:ubuntu-22.04
+docker build -t ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04 .
+docker push  ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04
 ```
 
 ## Run Experiments
 
-We should have efa:
-
-```
-fi_info | less
-```
-```console
-provider: efa
-    fabric: efa
-    domain: rdmap0s31-rdm
-    version: 119.0
-    type: FI_EP_RDM
-    protocol: FI_PROTO_EFA
-provider: efa
-    fabric: efa
-    domain: rdmap0s31-dgrm
-    version: 119.0
-    type: FI_EP_DGRAM
-    protocol: FI_PROTO_EFA
-...
-```
-
-Note that I found [this cheat sheet](https://github.com/aws/aws-ofi-nccl/blob/master/doc/efa-env-var.md) helpful.
-Ultimately I didn't need to set any envars - it just seemed to work.
-
-### 1. Bare Metal LAMMPS with Flux
-
-You'll need to first shell into your control plane. You should see flux running and usernetes.
-
-```bash
-flux resource list
-kubectl get nodes
-```
-
-Let's make results directories, etc.
+### 1. Bare Metal with Flux
 
 ```bash
 # This is where the example is
-cd /home/ubuntu/lammps
+mkdir -p /home/ubuntu/osu
+cd /home/ubuntu/osu
 
 # Create output directory for results
 mkdir -p ./results/bare-metal
@@ -80,41 +27,29 @@ mkdir -p ./results/bare-metal
 
 #### Testing commands
 
-This should work.  I'm not actually sure if we need any of these extra envars, but I think not? I'll leave them here for record. You can add one to flux like `--env=FI_PROVIDER=efa`
+These are installed to the host, at the same version as in the container.
 
 ```bash
-# 45 seconds
-flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 2 -v y 2 -v z 2 -in ./in.reaxff.hns -nocite
-
-# and on 8 nodes, 14 seconds
-flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns
+binary=/usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_allgather
+flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task $binary
 ```
 
-Try a bigger problem size:
+For the set, I'm going to stick with what we [decided before](https://github.com/converged-computing/metrics-operator-experiments/blob/main/google/kubecon/osu-benchmarks/run6/crd/metrics-64.yaml):
 
-```bash
-flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns -nocite
-```
+- all_reduce
+- osu_hello
+- osu_latency
 
-That took about 45 seconds, seems ok. One thing I'm not sure about is how to ensure we are using EFA - I assume because it wasn't working before (and we saw errors with libfabric) we are using it now. I am not using these, but want to keep them here for future Googling. Note that I also learned today that after version 1.20, libfabric on GitHub is mostly equivalent to the AWS efa installer.
-
-```console
-# Likely not needed?
-FI_LOG_LEVEL=debug
-FI_EFA_USE_DEVICE_RDMA=1
-FI_EFA_USE_HUGE_PAGE=0
-FI_PROVIDER=efa
-NCCL_PROTO=simple
-FI_EFA_ENABLE_SHM_TRANSFER=0
-```
-
-Here is how to do the runs:
 
 ```bash
 screen /bin/bash
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
-    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-${i}.out
+    # Run for each of the above tasks - this should be ALL nodes
+    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_allgather  |& tee ./results/bare-metal/all_gather-${i}.out
+    # And these just two
+    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/startup/osu_hello  |& tee ./results/bare-metal/osu_hello-${i}.out
+    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_latency  |& tee ./results/bare-metal/osu_latency-${i}.out
 done
 ```
 
@@ -134,7 +69,7 @@ container=/home/ubuntu/lammps/lammps-efa_ubuntu-22.04.sif
 mkdir -p ./results/container
 
 # Here is a test run - this took again 45 seconds
-flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns
+flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns
 
 # Run the same loop, but in the container
 for i in $(seq 1 20); do 
@@ -209,8 +144,6 @@ kubectl delete -f ./minicluster-efa.yaml --wait=true
 
 From basic testing, on two nodes (comparing in Usernetes with EFA and on bare metal with EFA) lammps took:
 
-##### 2 nodes
-
 - Problem size 8x8x8 (efa) on 2 nodes
  - 45 seconds on bare metal
  - 112 seconds in Usernetes
@@ -226,43 +159,6 @@ From basic testing, on two nodes (comparing in Usernetes with EFA and on bare me
 - Problem size 32x16x8 (efa) on 2 nodes (this is too long I think)
  - 83 seconds on bare metal
  - 727 seconds in Usernetes (12 minutes, 7 seconds)
-
-##### 4 nodes
-
-- Problem size 8x8x8 (efa)
- - 25 seconds on bare metal
- - 71 seconds seconds in Usernetes
-
-- Problem size 16x8x8 (efa)
- - 45 seconds on bare metal
- - 114 seconds in Usernetes
-
-- Problem size 16x16x8 (efa)
- - 82 seconds on bare metal
- - 219 seconds in Usernetes
-
-- Problem size 32x16x8 (efa)
- - 158 seconds on bare metal
- - 379 seconds in Usernetes (6 minutes, 19 seconds)
-
-##### 8 nodes
-
-- Problem size 8x8x8 (efa)
- - 14 seconds on bare metal
- - 49 seconds in Usernetes
-
-- Problem size 16x8x8 (efa)
- - 25 seconds on bare metal
- - 85 seconds in Usernetes
-
-- Problem size 16x16x8 (efa)
- - 46 seconds on bare metal
- - 138 seconds in Usernetes
-
-- Problem size 32x16x8 (efa)
- - 82 seconds on bare metal
- - 248 seconds in Usernetes (4 minutes, 08 seconds)
-
 
 I'm going to need to test the other end - likely 17 nodes for size 16, to decide on the range. For example, if usernetes scales really badly and the times are bad, we can't choose a problem size that is too big for that.
 

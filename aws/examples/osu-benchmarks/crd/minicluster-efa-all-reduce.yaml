@@ -1,0 +1,24 @@
+apiVersion: flux-framework.org/v1alpha2
+kind: MiniCluster
+metadata:
+  name: flux-osu-efa
+spec:
+  size: 2
+  tasks: 32
+  logging:
+    quiet: true
+  flux:
+    container:
+      image: ubuntu:jammy
+      disable: true
+  containers:
+    - image: ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04
+      command: osu_allreduce
+      resources:
+        limits:
+          vpc.amazonaws.com/efa: 1
+          cpu: "7"
+        requests:
+          cpu: "7"
+          vpc.amazonaws.com/efa: 1
+

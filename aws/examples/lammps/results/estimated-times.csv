@@ -1,0 +1,25 @@
+Problem Size,Nodes,Experiment Type,Seconds
+8x8x8x,2,usernetes,112
+8x8x8x,2,bare-metal,45
+8x8x8x,4,usernetes,71
+8x8x8x,4,bare-metal,25
+8x8x8x,8,usernetes,49
+8x8x8x,8,bare-metal,14
+16x8x8,2,usernetes,196
+16x8x8,2,bare-metal,83
+16x8x8,4,usernetes,114
+16x8x8,4,bare-metal,45
+16x8x8,8,usernetes,85
+16x8x8,8,bare-metal,25
+16x16x8,2,usernetes,300
+16x16x8,2,bare-metal,157
+16x16x8,4,usernetes,219
+16x16x8,4,bare-metal,82
+16x16x8,8,usernetes,138
+16x16x8,8,bare-metal,46
+32x16x8,2,usernetes,727
+32x16x8,2,bare-metal,83
+32x16x8,4,usernetes,379
+32x16x8,4,bare-metal,158
+32x16x8,8,usernetes,248
+32x16x8,8,bare-metal,82
