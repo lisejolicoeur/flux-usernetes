@@ -1,7 +1,7 @@
 apiVersion: flux-framework.org/v1alpha2
 kind: MiniCluster
 metadata:
-  name: flux-sample-efa
+  name: flux-osu-efa
 spec:
   # sizes for experiment:
   # 32, 512
@@ -17,9 +17,9 @@ spec:
       image: ubuntu:jammy
       disable: true
   containers:
-    - image: ghcr.io/rse-ops/lammps-efa:ubuntu-22.04@sha256:b7711c90880236c22977e5276a81de62c257a9aea71fbbf2ad247de08a9abb0a
-      workingDir: /opt/lammps/examples/reaxff/HNS
-      command: lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite
+    - image: ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04@
+sha256:e889e5220b26e3a22b06aef56f62ad97518ec6ad00aaed25b158ca090a09a340
+      command: osu_allreduce
       resources:
         limits:
           vpc.amazonaws.com/efa: 1

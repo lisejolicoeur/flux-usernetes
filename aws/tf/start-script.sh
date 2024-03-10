@@ -168,6 +168,20 @@ echo "export FLUX_URI=local:///home/ubuntu/run/flux/local" >> /home/ubuntu/.bash
 export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock
 export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run
 
+# Install osu benchmarks
+export PATH=/opt/amazon/openmpi/bin:$PATH
+cd /opt
+OSU_VERSION=5.8
+wget http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-$OSU_VERSION.tgz
+tar zxvf ./osu-micro-benchmarks-5.8.tgz
+cd osu-micro-benchmarks-5.8/
+./configure CC=mpicc CXX=mpicxx
+make -j 4 && sudo make install
+echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/one-sided" >> /home/ubuntu/.bashrc
+echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/collective" >> /home/ubuntu/.bashrc
+echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt" >> /home/ubuntu/.bashrc
+echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/startup" >> /home/ubuntu/.bashrc
+
 mkdir -p /home/ubuntu/.docker/run
 cd /home/ubuntu
 

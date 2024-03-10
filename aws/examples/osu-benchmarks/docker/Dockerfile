@@ -131,17 +131,33 @@ RUN mkdir /tmp/efa && \
 # EFA installation complete.
 # - Please logout/login to complete the installation.
 # - Libfabric was installed in /opt/amazon/efa
-# - Open MPI was installed in /opt/amazon/openmpi
+# - Open MPI was installed in /opt/amazon/openmpi (openmpi5 is also here)
 
 # fi_info -p efa -t FI_EP_RDM
 # Disable ptrace
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa-start.html
 RUN sysctl -w kernel.yama.ptrace_scope=0
 
-# Note we install to /usr so can be found by all users
-RUN git clone --depth 1 https://github.com/lammps/lammps.git /opt/lammps
-RUN  cd /opt/lammps && mkdir build && cd build &&. /etc/profile && \
-    cmake ../cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DPKG_REAXFF=yes -DBUILD_MPI=yes -DPKG_OPT=yes -DFFT=FFTW3 -DCMAKE_PREFIX_PATH=/opt/amazon/efa -DCMAKE_PREFIX_PATH=/opt/amazon/openmpi && \
-    make && make install && \
-    cp ./lmp /usr/bin/ && \
-    cp -R /opt/lammps/examples/reaxff/HNS /home/ubuntu/lammps
+RUN apt-get update && apt-get install -y git wget g++ gcc build-essential libc6-dev
+# Prepare tutorial per
+# https://ulhpc-tutorials.readthedocs.io/en/latest/parallel/mpi/OSU_MicroBenchmarks/
+
+# openmpi needs to be on the path
+ENV PATH=/opt/amazon/openmpi/bin:$PATH
+RUN git clone --depth 1 https://github.com/ULHPC/tutorials /opt/tutorials && \
+    mkdir -p /opt/osu-benchmark && \
+    cd /opt/osu-benchmark && \
+    ln -s /opt/tutorials/parallel/mpi/OSU_MicroBenchmarks ref.d && \
+    ln -s ref.d/Makefile . && \
+    ln -s ref.d/scripts  . && \
+    mkdir src && \
+    cd src && \
+    export OSU_VERSION=5.8 && \
+    wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tgz && \
+    tar xf osu-micro-benchmarks-${OSU_VERSION}.tgz && \
+    cd /opt/osu-benchmark && \
+    mkdir -p build.openmpi && cd build.openmpi && \
+    ../src/osu-micro-benchmarks-${OSU_VERSION}/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-${OSU_VERSION}/util --prefix=$(pwd) && \
+    make && make install
+
+ENV PATH=$PATH:/opt/osu-benchmark/build.openmpi/mpi/startup:/opt/osu-benchmark/build.openmpi/mpi/collective:/opt/osu-benchmark/build.openmpi/mpi/pt2pt:/opt/osu-benchmark/build.openmpi/mpi/one-sided
