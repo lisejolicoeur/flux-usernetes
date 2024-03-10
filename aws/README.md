@@ -110,6 +110,8 @@ cd /home/ubuntu/usernetes
 flux exec -x 0 -r all --dir /home/ubuntu/usernetes /bin/bash ./start-worker.sh
 ```
 
+It works! You shouldn't need to do the below.
+
 ##### Worker Nodes
 
 **Important** This is how you'd start each manually, but you should not need to do this now with the final command about to run the same script across workers from the control plane. This is what I did before I figured that out. Also note that your nodes need to be on the same subnet to see one another. The VPC and load balancer will require you to create 2+, but you don't have to use them all. That information is embedded in the terraform config now.
@@ -142,6 +144,14 @@ $ flux resource list
       free      2       32        0 i-0be1a2884b2873c22,i-0a7c8e4a2ddaffbe9
  allocated      0        0        0 
       down      0        0        0 
+```
+
+### Topology
+
+We can get our topology for later:
+
+```bash
+aws ec2 describe-instance-topology --region us-east-1 --filters Name=instance-type,Values=hpc7g.4xlarge > topology-32.json
 ```
 
 At this point you can try running an experiment example.

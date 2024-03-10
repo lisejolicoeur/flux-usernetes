@@ -6,12 +6,6 @@ We want to look at the following four cases:
 2. run on bare metal with lammps in container + flux
 3. run in usernetes with same container and lammps
 4. run on bare metal (with and without container) but with usernetes running (to assess overhead)
-
-We are going to use our [tf setup](../tf) on (still) a small node type, but with 7 instances.
-
-- Using 6 nodes on a 7 node cluster
-- Problem size 32 x 8 x 16
-- index 0 (control plane and flux lead broker) will not run jobs.
  
 ### Why are we looking at the four cases above?
 
@@ -108,18 +102,25 @@ NCCL_PROTO=simple
 FI_EFA_ENABLE_SHM_TRANSFER=0
 ```
 
-Here is how to do the runs:
+Here is how to do the runs. Note we need to change the size for each of the following:
+
+- 32, 512
+- 16, 256
+- 8, 128
+- 4, 64
 
 ```bash
 screen /bin/bash
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
-    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-${i}.out
+    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-32-512-${i}.out
+    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-16-256-${i}.out
+    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-8-128-${i}.out
+    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/bare-metal/lammps-4-64-${i}.out
 done
 ```
 
-I chose 45 seconds anticipating that the usernetes will be about twice as slow. We are still running on two nodes, so will need
-to adjust accordingly after doing an initial test (e.g., extrapolate difference in 2 vs N nodes based on differences between usernetes / bare metal for 2).
+That should generate all the lammps "bare metal" runs before we've deployed usernetes.
 
 ### 2. Container LAMMPS with Flux
 
@@ -135,11 +136,17 @@ mkdir -p ./results/container
 
 # Here is a test run - this took again 45 seconds
 flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns
+```
 
+And the experiments!
+```
 # Run the same loop, but in the container
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
-    flux run -N 2 --ntasks 32 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 8 -v y 8 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-${i}.out
+    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-32-512-${i}.out
+    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-16-256-${i}.out
+    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-8-128-${i}.out
+    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-4-64-${i}.out
 done
 ```
 
@@ -155,11 +162,6 @@ source <(kubectl completion bash)
 
 # Sanity check your cluster is there...
 kubectl get nodes
-```
-```console
-NAME                      STATUS   ROLES           AGE   VERSION
-u7s-i-007675dd8fe752491   Ready    control-plane   45m   v1.29.1
-u7s-i-062265c6a447abe58   Ready    <none>          42m   v1.29.1
 ```
 
 We are going to install the efa plugin (terribly tweaked by me to get it working...) and the Flux Operator, pinned to a specific release for ARM. It's easiest to clone this repository to interact, likely.
@@ -180,7 +182,7 @@ I recommended copying into your present working directory and tweaking for the c
 
 ```console
 cp flux-usernetes/aws/examples/lammps/crd/minicluster-efa.yaml .
-vim ...
+# vim minicluster-efa.yaml
 ```
 
 Remember that you'll typically need to ask for one fewer note than you have because we don't schedule to the control plane.
@@ -264,9 +266,16 @@ From basic testing, on two nodes (comparing in Usernetes with EFA and on bare me
  - 248 seconds in Usernetes (4 minutes, 08 seconds)
 
 
-I'm going to need to test the other end - likely 17 nodes for size 16, to decide on the range. For example, if usernetes scales really badly and the times are bad, we can't choose a problem size that is too big for that.
+We want to test each of these sizes - WE WILL NEED TO EDIT THE MINICLUSTER YAML FOR EACH
+
+- 32, 512
+- 16, 256
+- 8, 128
+- 4, 64
 
 ```bash
+size=32
+tasks=512
 for i in $(seq 1 20); do 
     echo "Running iteration ${i}"
     kubectl apply -f ./minicluster-efa.yaml 
@@ -277,17 +286,11 @@ for i in $(seq 1 20); do
     kubectl wait --for=condition=ready --timeout=120s pod/${pod}
     sleep 10
     # This waits for lammps to finish (streaming the log)
-    kubectl logs ${pod} -f |& tee ./results/usernetes/lammps-${i}.out
+    kubectl logs ${pod} -f |& tee ./results/usernetes/lammps-${size}-${tasks}-${i}.out
     # And an extra precaution the entire job/workers are complete
-    kubectl wait --for=condition=complete --timeout=120s job/flux-sample
+    kubectl wait --for=condition=complete --timeout=120s job/flux-sample-efa
     kubectl delete -f ./minicluster-efa.yaml --wait=true
 done
-```
-
-Ensure you clean up (delete the flux operator) when you are done.
-
-```bash
-kubectl delete -f ./crd/flux-operator-arm.yaml
 ```
 
 ## Debugging

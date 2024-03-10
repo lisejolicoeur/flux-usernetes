@@ -3,6 +3,7 @@ kind: MiniCluster
 metadata:
   name: flux-osu-efa
 spec:
+  # This one does NOT change
   size: 2
   tasks: 2
   logging:
@@ -12,7 +13,8 @@ spec:
       image: ubuntu:jammy
       disable: true
   containers:
-    - image: ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04
+    - image: ghcr.io/rse-ops/osu-benchmarks-efa:ubuntu-22.04@
+sha256:e889e5220b26e3a22b06aef56f62ad97518ec6ad00aaed25b158ca090a09a340
       command: osu_latency
       resources:
         limits:
