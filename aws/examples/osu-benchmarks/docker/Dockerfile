@@ -1,9 +1,6 @@
 ARG tag="22.04"
 FROM ubuntu:${tag} as builder
 
-# NOTE: although flux is in this container, we will be using flux provided by the operator
-# But it makes sense to add it in case we want to disable that (and use one container)
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies (might be some left over from BDF)
@@ -130,13 +127,11 @@ RUN mkdir /tmp/efa && \
     cd aws-efa-installer && \
     ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf --no-verify
 # note that with the --no-verify flag you don't get the testing libs.
-# If the container does not build, you can remove it.
-#    ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf
 
 # EFA installation complete.
 # - Please logout/login to complete the installation.
 # - Libfabric was installed in /opt/amazon/efa
-# - Open MPI was installed in /opt/amazon/openmpi
+# - Open MPI was installed in /opt/amazon/openmpi (openmpi5 is also here)
 
 # fi_info -p efa -t FI_EP_RDM
 # Disable ptrace
@@ -161,7 +156,6 @@ RUN git clone --depth 1 https://github.com/ULHPC/tutorials /opt/tutorials && \
     wget --no-check-certificate http://mvapich.cse.ohio-state.edu/download/mvapich/osu-micro-benchmarks-${OSU_VERSION}.tgz && \
     tar xf osu-micro-benchmarks-${OSU_VERSION}.tgz && \
     cd /opt/osu-benchmark && \
-    # Compile based on openmpi
     mkdir -p build.openmpi && cd build.openmpi && \
     ../src/osu-micro-benchmarks-${OSU_VERSION}/configure CC=mpicc CFLAGS=-I$(pwd)/../src/osu-micro-benchmarks-${OSU_VERSION}/util --prefix=$(pwd) && \
     make && make install

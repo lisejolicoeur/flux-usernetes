@@ -1,9 +1,6 @@
 ARG tag="22.04"
 FROM ubuntu:${tag} as builder
 
-# NOTE: although flux is in this container, we will be using flux provided by the operator
-# But it makes sense to add it in case we want to disable that (and use one container)
-
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies (might be some left over from BDF)
@@ -130,8 +127,6 @@ RUN mkdir /tmp/efa && \
     cd aws-efa-installer && \
     ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf --no-verify
 # note that with the --no-verify flag you don't get the testing libs.
-# If the container does not build, you can remove it.
-#    ./efa_installer.sh -y -g -d --skip-kmod --skip-limit-conf
 
 # EFA installation complete.
 # - Please logout/login to complete the installation.
