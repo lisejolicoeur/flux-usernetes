@@ -9,7 +9,7 @@ locals {
 
   instance_type = "hpc7g.4xlarge"
   vpc_cidr      = "10.0.0.0/16"
-  key_name      = "<your-key>"
+  key_name      = "dinosaur"
 
   # Also important - the m4.xlarge has ens3 and m2.4xlarge has eth0, hpc7g has ens5
   ethernet_device = "ens5"

@@ -1,0 +1,5 @@
+Defaulted container "flux-osu-efa" out of: flux-osu-efa, flux-view (init)
+
+# OSU MPI Barrier Latency Test v5.8
+# Avg Latency(us)
+          1098.94
