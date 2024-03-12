@@ -257,6 +257,7 @@ def make_plot(
     ax = plotfunc(
         x=xdimension, y=ydimension, hue=hue, data=df, linewidth=0.8, palette=palette, whis=[5, 95]
     )
+
     plt.title(title)
     ax.set_xlabel(xlabel, fontsize=16)
     ax.set_ylabel(ylabel, fontsize=16)

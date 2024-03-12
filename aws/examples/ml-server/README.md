@@ -9,7 +9,7 @@ cd ~/usernetes
 Note that we need to update the docker-compose.yaml to include port 8080. You can do that manually, or just:
 
 ```console
-wget -O docker-compose-ml.yaml https://gist.githubusercontent.com/vsoch/69034d0bf8f4d009935aa2a0f84072c6/raw/077731396bebb0944305ec36fb8c9e8bbf1d171a/docker-compose.yaml
+wget -O docker-compose-ml.yaml https://raw.githubusercontent.com/converged-computing/flux-usernetes/main/aws/examples/ml-server/crd/docker-compose.yaml
 flux archive create --name=docker-compose --mmap -C /home/ubuntu/usernetes docker-compose-ml.yaml
 flux exec -x 0 -r all flux archive extract --name=docker-compose -C /home/ubuntu/usernetes
 flux exec -r all --dir /home/ubuntu/usernetes mv docker-compose-ml.yaml docker-compose.yaml
@@ -47,13 +47,12 @@ kubectl get nodes
 ## 1. Build Containers
 
 This first required [building containers for arm](https://github.com/converged-computing/lammps-stream-ml/blob/main/docs/containers.md).
-I cloned the repository, did the build, and pushed to a registry.
+I cloned the repository, did the build, and pushed to a registry. Note that we are going to run stuff from the lammps directory since the scripts are there for lammps!
 
-```
-mkdir -p /home/ubuntu/ml-server
-cd /home/ubuntu/ml-server
-git clone https://github.com/converged-computing/flux-usernetes
-cd flux-usernetes/aws/examples/ml-server
+```console
+# if you didn't do this, do it now
+git clone -b add-experiment-march-10 https://github.com/converged-computing/flux-usernetes /home/ubuntu/lammps/flux-usernetes
+cd /home/ubuntu/lammps/flux-usernetes/aws/examples/ml-server
 ```
 
 Ensure we tweak the flags for arm.
@@ -87,42 +86,8 @@ You should already have usernetes running on your setup.
 source <(kubectl completion bash) 
 ```
 
-### Ingress
-
-We then want to create a service to access the TBA ml-service.
-
-```bash
-kubectl apply -f crd/ingress.yaml
-```
-```console
-$ kubectl describe ingress
-Name:             ml-ingress
-Labels:           <none>
-Namespace:        default
-Address:          
-Ingress Class:    <none>
-Default backend:  <default>
-Rules:
-  Host        Path  Backends
-  ----        ----  --------
-  localhost   
-              /   ml-service:8080 (<none>)
-Annotations:  <none>
-Events:       <none>
-```
-
-We are then going to apply [ingress-nginx](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx),
-but install with helm so we get the arm variant.
-
-```console
-curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-chmod 700 get_helm.sh
-./get_helm.sh
-
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm install nginx-ingress ingress-nginx/ingress-nginx --namespace kube-system
-```
+Note that for a production cluster, you would likely use ingress. Since we are using docker compose, we instead are going
+to interact with the node running the service, and the same port exposed there. It's because adding an ingress controller tends to be buggy, and for the eventual HPC use case, we want to keep things simple.
 
 ### Deployment
 
@@ -169,30 +134,29 @@ pull the same lammps container that we will use for the jobs (and run a script t
 We will need this container anyway to run lammps, might as well use it for other things!
 
 ```bash
-flux exec -r all mkdir -p /home/ubuntu/ml-server
-flux exec -r all --dir /home/ubuntu/ml-server singularity pull docker://ghcr.io/converged-computing/lammps-stream-ml:lammps-arm
+flux exec -r all --dir /home/ubuntu/lammps singularity pull docker://ghcr.io/converged-computing/lammps-stream-ml:lammps-arm
 ```
 
 Here is how to create the models for the running server. The names will be funny but largely don't matter - we can get them programmatically later.
 
 ```bash
-# We need to run this from the lammps root
+# Remember, we need to run this from the lammps root!
 cd /home/ubuntu/lammps
 
 # Set the container path
-container=/home/ubuntu/ml-server/lammps-stream-ml_lammps-arm.sif
+container=/home/ubuntu/lammps/lammps-stream-ml_lammps-arm.sif
 
 # Install the riverapi for local interaction
 python3 -m pip install riverapi 
 
-# Set your host
+# Set your host (the aws node that the ml-server pod is running on, plus the port)
 host=http://i-0c79705f628c562a3:8080
 
 # Assumes service running on localhost directory (first parameter, default)
 singularity exec $container python3 /code/1-create-models.py $host
 ```
 ```console
-Preparing to create models for client URL http://localhost
+Preparing to create models for client URL http://i-0c79705f628c562a3:8080
 Created model expressive-cupcake
 Created model confused-underoos
 Created model doopy-platanos
@@ -203,13 +167,15 @@ Created model doopy-platanos
 Copy the script into the lammps directory, for easy access.
 
 ```bash
-cp /home/ubuntu/ml-server/flux-usernetes/aws/examples/ml-server/docker/scripts/2-run-lammps-flux.py .
+cp ./flux-usernetes/aws/examples/ml-server/docker/scripts/2-run-lammps-flux.py .
 ```
 
-We can now run jobs with flux (train):
+We can now run jobs with flux (train). Note that these are run with run, because we are going to use all the nodes.
+You could obviously vary this (and submit all at once) and to do that, you could add the `--flags waitable` and then ask flux to "wait --all" before submitting the testing jobs. That can be done in a batch! We will be prototyping a tool to make this easier.
+Note that I timed it to get a sense for how long 10 runs takes, mostly to estimate a cost. You don't need to do that.
 
-```
-python3 2-run-lammps-flux.py train --container $container --np 32 --nodes 2 --workdir /opt/lammps/examples/reaxff/HNS --x-min 1 --x-max 32 --y-min 1 --y-max 8 --z-min 1 --z-max 16 --iters 1 --in --url $host
+```bash
+time python3 2-run-lammps-flux.py train --container $container --np 48 --nodes 3 --workdir /opt/lammps/examples/reaxff/HNS --x-min 1 --x-max 8 --y-min 1 --y-max 8 --z-min 1 --z-max 8 --iters 10 --url $host
 ```
 
 That is a test run - adjust `--ters` to be a larger number for actual training! And the job size to match your resources.
@@ -219,7 +185,7 @@ That is a test run - adjust `--ters` to be a larger number for actual training! 
 Now let's generate more data, but this time, compare the actual time with each model prediction. This script is very similar but calls a different API function.
 
 ```bash
-python3 2-run-lammps-flux.py predict --container $container --np 32 --nodes 2 --workdir /opt/lammps/examples/reaxff/HNS --x-min 1 --x-max 32 --y-min 1 --y-max 8 --z-min 1 --z-max 16 --iters 3 --url $host --out test-predict.json
+python3 2-run-lammps-flux.py predict --container $container --np 32 --nodes 2 --workdir /opt/lammps/examples/reaxff/HNS --x-min 1 --x-max 8 --y-min 1 --y-max 8 --z-min 1 --z-max 8 --iters 3 --url $host --out test-predict.json
 ```
 ```console
 🧪️ Running iteration 0
@@ -266,4 +232,3 @@ Yes, these are quite bad, but it was only 20x for runs.
 ```
 
 Negative R squared, lol. 😬️
-
