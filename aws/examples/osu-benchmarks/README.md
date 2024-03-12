@@ -203,8 +203,6 @@ for i in $(seq 1 20); do
     sleep 10
     # This waits for lammps to finish (streaming the log)
     kubectl logs ${pod} -f |& tee ./results/usernetes/osu-all-reduce-${size}-${i}.out
-    # And an extra precaution the entire job/workers are complete
-    kubectl wait --for=condition=complete --timeout=120s job/flux-sample-efa
     kubectl delete -f ./crd/minicluster-efa-all-reduce.yaml 
 
     kubectl apply -f ./crd/minicluster-efa-barrier.yaml
@@ -216,8 +214,6 @@ for i in $(seq 1 20); do
     sleep 10
     # This waits for lammps to finish (streaming the log)
     kubectl logs ${pod} -f |& tee ./results/usernetes/osu-barrier-${size}-${i}.out
-    # And an extra precaution the entire job/workers are complete
-    kubectl wait --for=condition=complete --timeout=120s job/flux-sample-efa
     kubectl delete -f ./crd/minicluster-efa-barrier.yaml
 
     kubectl apply -f ./crd/minicluster-efa-osu-latency.yaml
@@ -229,8 +225,6 @@ for i in $(seq 1 20); do
     sleep 10
     # This waits for lammps to finish (streaming the log)
     kubectl logs ${pod} -f |& tee ./results/usernetes/osu-latency-${size}-${i}.out
-    # And an extra precaution the entire job/workers are complete
-    kubectl wait --for=condition=complete --timeout=120s job/flux-sample-efa
     kubectl delete -f ./crd/minicluster-efa-osu-latency.yaml
 done
 ```

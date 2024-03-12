@@ -9,7 +9,7 @@ locals {
 
   instance_type = "hpc7g.4xlarge"
   vpc_cidr      = "10.0.0.0/16"
-  key_name      = "dinosaur"
+  key_name      = "<your-key>"
 
   # Also important - the m4.xlarge has ens3 and m2.4xlarge has eth0, hpc7g has ens5
   ethernet_device = "ens5"
@@ -18,9 +18,9 @@ locals {
   volume_size = 100
 
   # Set autoscaling to consistent size so we don't scale for now
-  min_size     = 33
-  max_size     = 33
-  desired_size = 33
+  min_size     = 2
+  max_size     = 2
+  desired_size = 2
 
   cidr_block_a = "10.0.1.0/24"
   cidr_block_b = "10.0.2.0/24"

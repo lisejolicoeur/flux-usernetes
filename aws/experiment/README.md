@@ -357,11 +357,6 @@ done
 
 
 And then you are done! Copy the data, or you will be very sad. I did this at several increments, mostly worried about losing data.
-
-```console
-scp -r -i ~/.ssh/dinosaur-llnl
-```
-
 And some extra flux info:
 
 ```
@@ -369,4 +364,26 @@ $ flux resource info
 33 Nodes, 528 Cores, 0 GPUs
 ubuntu@i-09b9c39571c635328:~$ flux resource R
 {"version": 1, "execution": {"R_lite": [{"rank": "0-32", "children": {"core": "0-15"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["i-09b9c39571c635328,i-008f0e304d40ca3a2,i-028d109545c7334f8,i-06e26186f161a497a,i-0d44943116b931622,i-0742dc17f9707ecd4,i-0a3cb311d11f5b22a,i-0092e145bacacbb50,i-01ae08da1fefbbc5a,i-0544124d44f45121f,i-0477541c56fbf8333,i-00a6e26c9695fe255,i-06d868abf3f33f852,i-08751f901b3d8cd91,i-02d69237f31355786,i-09425b966ee3c9530,i-09da2dea953dd1bed,i-06ed29b5f2be73029,i-029e274e9c87e92ee,i-0012875cd3aabf5c6,i-020ce554596630f85,i-0a1047f24d3f30c9f,i-0889c960423636da3,i-0a458abb18af676e8,i-09a42753c5b24aa78,i-0997f355da1326bc1,i-024f98dea1d5390a1,i-022ead1bb3f3cfd88,i-08d11416273066ef9,i-02fda578dbaeb41c5,i-0a2a4357b398e5531,i-01d328f0112b6bca5,i-04d7fa1b8f3897468"]}}
+```
+
+To plot results for LAMMPS
+
+```bash
+python plot-lammps.py
+```
+```console
+                           ranks iteration time_seconds  nodes percent_cpu_utilization
+experiment                                                                            
+bare-metal                 240.0      10.5         41.8   15.0                   99.65
+bare-metal-with-usernetes  240.0      10.5       42.625   15.0                99.46875
+container                  240.0      10.5       42.225   15.0                99.65125
+container-with-usernetes   240.0      10.5      42.7375   15.0                99.46375
+usernetes                  240.0      10.5       128.05   15.0                    43.7
+                                ranks  iteration  time_seconds      nodes  percent_cpu_utilization
+experiment                                                                                        
+bare-metal                 172.663425   5.802662     25.978764  10.791464                 0.111378
+bare-metal-with-usernetes  172.663425   5.802662     25.475913  10.791464                 0.110915
+container                  172.663425   5.802662     25.573411  10.791464                 0.110228
+container-with-usernetes   172.663425   5.802662     25.492488  10.791464                 0.110515
+usernetes                  172.663425   5.802662     62.431715  10.791464                 0.000000
 ```
