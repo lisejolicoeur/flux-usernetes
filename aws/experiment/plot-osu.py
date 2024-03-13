@@ -86,29 +86,32 @@ def plot_results(dfs, img):
     """
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
-        print(f"Preparing plot for {slug}")
+        for nodes in df.nodes.unique():
+            print(f"Preparing plot for {slug}")
 
-        # Separate x and y - latency (y) is a function of size (x)        
-        x = "size"
-        if slug == "barrier":
-            x = "ranks"
-        y = "average_latency_us"
+            subset = df[df.nodes == nodes]
 
-        # for sty in plt.style.available:
-        ax = sns.lineplot(
-            data=df, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment",
-        )
-        plt.title(f"{slug} (y) as a function of {x} (x) ")
-        ax.set_xlabel(x + " (logscale)", fontsize=16)
-        ax.set_ylabel("Average latency (logscale)", fontsize=16)
-        ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize=14)
-        ax.set_yticklabels(ax.get_yticks(), fontsize=14)
-        plt.xscale("log")
-        plt.yscale("log")
-        plt.tight_layout()
-        plt.savefig(os.path.join(img, f"osu-{slug}.png"))
-        plt.clf()
-        plt.close()
+            # Separate x and y - latency (y) is a function of size (x)        
+            x = "size"
+            if slug == "barrier":
+                x = "ranks"
+            y = "average_latency_us"
+            
+            # for sty in plt.style.available:
+            ax = sns.lineplot(
+                data=subset, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment", palette="Set1"
+            )
+            plt.title(f"{slug} (y) as a function of {x} (x) on {nodes} nodes")
+            ax.set_xlabel(x + " (logscale)", fontsize=16)
+            ax.set_ylabel("Average latency (logscale)", fontsize=16)
+            ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize=14)
+            ax.set_yticklabels(ax.get_yticks(), fontsize=14)
+            plt.xscale("log")
+            plt.yscale("log")
+            plt.tight_layout()
+            plt.savefig(os.path.join(img, f"osu-{slug}-{nodes}-nodes.png"))
+            plt.clf()
+            plt.close()
 
 def parse_data(files):
     """
@@ -157,13 +160,23 @@ def parse_data(files):
         filebase = pieces[-1]
 
         # barrier and allreduce, ranks are relevant
-        try:
+        if "all_reduce" in filename:
             iteration = int(filebase.split("-")[-1].replace(".out", ""))
             nodes = int(filebase.split("-")[-3])
             tasks = int(filebase.split("-")[-2])
-
-        # latency just has iteration
-        except:
+        elif "all-reduce" in filename:
+            iteration = int(filebase.split("-")[-1].replace(".out", ""))
+            nodes = int(filebase.split("-")[-2])
+            tasks = nodes * 16
+        elif "osu_barrier" in filename:
+            iteration = int(filebase.split("-")[-1].replace(".out", ""))
+            nodes = int(filebase.split("-")[-3])
+            tasks = int(filebase.split("-")[-2])
+        elif "osu-barrier" in filename:
+            iteration = int(filebase.split("-")[-1].replace(".out", ""))
+            nodes = int(filebase.split("-")[-2])
+            tasks = nodes * 16
+        else:
             iteration = int(filebase.split("-")[-1].replace(".out", ""))
             nodes = 2
             tasks = 2

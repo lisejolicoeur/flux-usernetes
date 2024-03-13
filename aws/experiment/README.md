@@ -1,5 +1,7 @@
 # Flux Usernetes Experiment on AWS
 
+Note that we re-did the osu all reduce on 2 nodes in [final/osu-followup](final/osu-followup)
+
 ### Lammps and OSU Benchmarks
 
 - Start time: 10:29 am, March 10 2024

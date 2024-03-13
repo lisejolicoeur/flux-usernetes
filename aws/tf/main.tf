@@ -18,9 +18,9 @@ locals {
   volume_size = 100
 
   # Set autoscaling to consistent size so we don't scale for now
-  min_size     = 33
-  max_size     = 33
-  desired_size = 33
+  min_size     = 3
+  max_size     = 3
+  desired_size = 3
 
   cidr_block_a = "10.0.1.0/24"
   cidr_block_b = "10.0.2.0/24"
