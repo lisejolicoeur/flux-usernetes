@@ -86,6 +86,13 @@ def plot_results(dfs, img):
     """
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
+        print(df.groupby(['experiment','nodes']).mean())
+        print(df.groupby(['experiment','nodes']).std())
+
+    return 
+
+    # Save each completed data frame to file and plot!
+    for slug, df in dfs.items():
         for nodes in df.nodes.unique():
             print(f"Preparing plot for {slug}")
 
