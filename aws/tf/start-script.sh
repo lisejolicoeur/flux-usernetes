@@ -168,6 +168,11 @@ echo "export FLUX_URI=local:///home/ubuntu/run/flux/local" >> /home/ubuntu/.bash
 export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock
 export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run
 
+# Try librdmacm
+sudo sysctl net.ipv4.conf.all.accept_local=1
+sudo mknod /dev/infiniband/rdma_cm c 231 255
+sudo chmod oug+w /dev/infiniband/rdma_cm
+
 # Install osu benchmarks
 export PATH=/opt/amazon/openmpi/bin:$PATH
 cd /opt

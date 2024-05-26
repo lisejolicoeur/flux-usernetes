@@ -139,6 +139,7 @@ RUN mkdir /tmp/efa && \
 RUN sysctl -w kernel.yama.ptrace_scope=0
 
 # Note we install to /usr so can be found by all users
+RUN apt-get install -y librdmacm-dev
 RUN git clone --depth 1 https://github.com/lammps/lammps.git /opt/lammps
 RUN  cd /opt/lammps && mkdir build && cd build &&. /etc/profile && \
     cmake ../cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DPKG_REAXFF=yes -DBUILD_MPI=yes -DPKG_OPT=yes -DFFT=FFTW3 -DCMAKE_PREFIX_PATH=/opt/amazon/efa -DCMAKE_PREFIX_PATH=/opt/amazon/openmpi && \
