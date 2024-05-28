@@ -9,7 +9,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.108 seconds
+  read_data CPU = 0.049 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   16 by 8 by 4 MPI processor grid
@@ -17,7 +17,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 17.53 out of 2048 (0.86%)
   622592 atoms
-  replicate CPU = 0.011 seconds
+  replicate CPU = 0.018 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -52,20 +52,20 @@ Per MPI rank memory allocation (min/avg/max) = 143.9 | 143.9 | 143.9 Mbytes
         80   298.00108     -113.27171      8403.3108     -111.57247     -1.6992334      7019230      
         90   301.69581     -113.28273      9528.4144     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.763     -111.58629     -1.6986606      7019230      
-Loop time of 57.8993 on 512 procs for 100 steps with 622592 atoms
+Loop time of 15.9104 on 512 procs for 100 steps with 622592 atoms
 
-Performance: 0.015 ns/day, 1608.313 hours/ns, 1.727 timesteps/s, 1.075 Matom-step/s
-43.7% CPU use with 512 MPI tasks x 1 OpenMP threads
+Performance: 0.054 ns/day, 441.955 hours/ns, 6.285 timesteps/s, 3.913 Matom-step/s
+99.6% CPU use with 512 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 12.319     | 17.055     | 19.573     |  46.7 | 29.46
-Neigh   | 0.21816    | 0.42577    | 0.45938    |   5.0 |  0.74
-Comm    | 0.35334    | 2.8019     | 7.5555     | 115.1 |  4.84
-Output  | 0.39391    | 0.42877    | 0.48322    |   2.7 |  0.74
-Modify  | 36.957     | 37.187     | 37.429     |   1.5 | 64.23
-Other   |            | 0.0006915  |            |       |  0.00
+Pair    | 6.4799     | 7.525      | 8.5266     |  12.2 | 47.30
+Neigh   | 0.16477    | 0.16673    | 0.18273    |   0.3 |  1.05
+Comm    | 0.10349    | 0.80643    | 2.1435     |  41.6 |  5.07
+Output  | 0.051617   | 0.12691    | 0.18183    |   7.3 |  0.80
+Modify  | 7.0416     | 7.2847     | 7.5375     |   5.5 | 45.79
+Other   |            | 0.0006691  |            |       |  0.00
 
 Nlocal:           1216 ave        1225 max        1208 min
 Histogram: 3 14 67 70 144 132 36 35 7 4
@@ -78,4 +78,4 @@ Total # of neighbors = 2.2167746e+08
 Ave neighs/atom = 356.05574
 Neighbor list builds = 5
 Dangerous builds not checked
-Total wall time: 0:01:00
+Total wall time: 0:00:16

@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 81.25 out of 2048 (3.97%)
   622592 atoms
-  replicate CPU = 0.004 seconds
+  replicate CPU = 0.006 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 518.9 | 518.9 | 518.9 Mbytes
         80   298.00108     -113.27171      8403.273      -111.57247     -1.6992335      7019230      
         90   301.69582     -113.28273      9528.4187     -111.58383     -1.6989         7019230      
        100   302.45759     -113.28495      10433.73      -111.58629     -1.6986607      7019230      
-Loop time of 80.8734 on 64 procs for 100 steps with 622592 atoms
+Loop time of 81.1774 on 64 procs for 100 steps with 622592 atoms
 
-Performance: 0.011 ns/day, 2246.482 hours/ns, 1.237 timesteps/s, 769.836 katom-step/s
+Performance: 0.011 ns/day, 2254.929 hours/ns, 1.232 timesteps/s, 766.952 katom-step/s
 99.6% CPU use with 64 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 41.079     | 45.087     | 49.117     |  27.8 | 55.75
-Neigh   | 0.67311    | 0.67647    | 0.69       |   0.3 |  0.84
-Comm    | 0.081242   | 4.072      | 8.1166     |  92.4 |  5.04
-Output  | 0.0048157  | 0.042769   | 0.11043    |  22.1 |  0.05
-Modify  | 30.978     | 30.992     | 30.999     |   0.1 | 38.32
-Other   |            | 0.00328    |            |       |  0.00
+Pair    | 40.825     | 45.083     | 49.11      |  28.3 | 55.54
+Neigh   | 0.67214    | 0.67671    | 0.6944     |   0.4 |  0.83
+Comm    | 0.085921   | 4.0779     | 8.3681     |  93.9 |  5.02
+Output  | 0.0042039  | 0.038379   | 0.10197    |  20.5 |  0.05
+Modify  | 31.281     | 31.298     | 31.304     |   0.1 | 38.56
+Other   |            | 0.003271   |            |       |  0.00
 
 Nlocal:           9728 ave        9740 max        9716 min
 Histogram: 1 3 4 8 13 19 8 5 1 2
@@ -77,4 +77,4 @@ Total # of neighbors = 1.9034262e+08
 Ave neighs/atom = 305.7261
 Neighbor list builds = 5
 Dangerous builds not checked
-Total wall time: 0:01:22
+Total wall time: 0:01:23

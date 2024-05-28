@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.066 seconds
+  read_data CPU = 0.051 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   8 by 4 by 4 MPI processor grid
@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 53.12 out of 2048 (2.59%)
   622592 atoms
-  replicate CPU = 0.004 seconds
+  replicate CPU = 0.005 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 331 | 331 | 331 Mbytes
         80   298.00108     -113.27171      8403.2885     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4034     -111.58383     -1.6989         7019230      
        100   302.4576      -113.28495      10433.729     -111.58629     -1.6986607      7019230      
-Loop time of 44.8194 on 128 procs for 100 steps with 622592 atoms
+Loop time of 44.8933 on 128 procs for 100 steps with 622592 atoms
 
-Performance: 0.019 ns/day, 1244.984 hours/ns, 2.231 timesteps/s, 1.389 Matom-step/s
+Performance: 0.019 ns/day, 1247.037 hours/ns, 2.228 timesteps/s, 1.387 Matom-step/s
 99.5% CPU use with 128 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 21.401     | 24.246     | 26.968     |  24.3 | 54.10
-Neigh   | 0.41038    | 0.41501    | 0.42396    |   0.5 |  0.93
-Comm    | 0.11314    | 2.6632     | 5.6643     |  74.0 |  5.94
-Output  | 0.0069887  | 0.043137   | 0.067271   |  11.3 |  0.10
-Modify  | 17.308     | 17.451     | 17.686     |   4.0 | 38.94
-Other   |            | 0.001909   |            |       |  0.00
+Pair    | 21.434     | 24.248     | 27.006     |  24.3 | 54.01
+Neigh   | 0.40967    | 0.41448    | 0.42264    |   0.4 |  0.92
+Comm    | 0.099585   | 2.6868     | 5.668      |  73.9 |  5.98
+Output  | 0.0077989  | 0.04735    | 0.070949   |  12.1 |  0.11
+Modify  | 17.34      | 17.494     | 17.736     |   4.3 | 38.97
+Other   |            | 0.00194    |            |       |  0.00
 
 Nlocal:           4864 ave        4876 max        4854 min
 Histogram: 5 12 13 13 22 34 16 7 5 1

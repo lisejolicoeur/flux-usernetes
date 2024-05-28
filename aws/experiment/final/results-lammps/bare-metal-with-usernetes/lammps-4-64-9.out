@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.008 seconds
+  read_data CPU = 0.011 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   8 by 4 by 2 MPI processor grid
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 518.9 | 518.9 | 518.9 Mbytes
         80   298.00108     -113.27171      8403.273      -111.57247     -1.6992335      7019230      
         90   301.69582     -113.28273      9528.4187     -111.58383     -1.6989         7019230      
        100   302.45759     -113.28495      10433.73      -111.58629     -1.6986607      7019230      
-Loop time of 80.9475 on 64 procs for 100 steps with 622592 atoms
+Loop time of 81.0389 on 64 procs for 100 steps with 622592 atoms
 
-Performance: 0.011 ns/day, 2248.542 hours/ns, 1.235 timesteps/s, 769.131 katom-step/s
+Performance: 0.011 ns/day, 2251.080 hours/ns, 1.234 timesteps/s, 768.263 katom-step/s
 99.6% CPU use with 64 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 40.784     | 45.021     | 49.064     |  28.3 | 55.62
-Neigh   | 0.69018    | 0.69524    | 0.71516    |   0.5 |  0.86
-Comm    | 0.089813   | 4.0893     | 8.3694     |  94.0 |  5.05
-Output  | 0.0046076  | 0.046164   | 0.11623    |  23.2 |  0.06
-Modify  | 31.073     | 31.093     | 31.112     |   0.1 | 38.41
-Other   |            | 0.003222   |            |       |  0.00
+Pair    | 40.889     | 45.013     | 49.119     |  28.1 | 55.54
+Neigh   | 0.68976    | 0.69402    | 0.69936    |   0.3 |  0.86
+Comm    | 0.09345    | 4.15       | 8.3169     |  92.5 |  5.12
+Output  | 0.0053623  | 0.052746   | 0.1303     |  25.1 |  0.07
+Modify  | 31.118     | 31.126     | 31.133     |   0.1 | 38.41
+Other   |            | 0.003294   |            |       |  0.00
 
 Nlocal:           9728 ave        9740 max        9716 min
 Histogram: 1 3 4 8 13 19 8 5 1 2

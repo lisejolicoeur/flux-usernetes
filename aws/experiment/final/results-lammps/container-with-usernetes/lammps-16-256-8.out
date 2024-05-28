@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.065 seconds
+  read_data CPU = 0.060 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   8 by 8 by 4 MPI processor grid
@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 35.06 out of 2048 (1.71%)
   622592 atoms
-  replicate CPU = 0.020 seconds
+  replicate CPU = 0.026 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,19 +51,19 @@ Per MPI rank memory allocation (min/avg/max) = 215 | 215 | 215 Mbytes
         80   298.00109     -113.27171      8403.2984     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4102     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.734     -111.58629     -1.6986607      7019230      
-Loop time of 25.9524 on 256 procs for 100 steps with 622592 atoms
+Loop time of 25.8947 on 256 procs for 100 steps with 622592 atoms
 
-Performance: 0.033 ns/day, 720.899 hours/ns, 3.853 timesteps/s, 2.399 Matom-step/s
-99.4% CPU use with 256 MPI tasks x 1 OpenMP threads
+Performance: 0.033 ns/day, 719.297 hours/ns, 3.862 timesteps/s, 2.404 Matom-step/s
+99.5% CPU use with 256 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 11.608     | 13.382     | 15.129     |  17.9 | 51.56
-Neigh   | 0.25911    | 0.26193    | 0.27181    |   0.3 |  1.01
-Comm    | 0.087318   | 1.7364     | 3.622      |  50.4 |  6.69
-Output  | 0.03021    | 0.07049    | 0.13166    |  13.2 |  0.27
-Modify  | 10.408     | 10.501     | 10.626     |   2.8 | 40.46
+Pair    | 11.564     | 13.383     | 15.145     |  18.0 | 51.68
+Neigh   | 0.25935    | 0.26192    | 0.26792    |   0.3 |  1.01
+Comm    | 0.099645   | 1.7457     | 3.6873     |  50.4 |  6.74
+Output  | 0.010799   | 0.056781   | 0.11854    |  14.4 |  0.22
+Modify  | 10.352     | 10.446     | 10.587     |   2.9 | 40.34
 Other   |            | 0.001027   |            |       |  0.00
 
 Nlocal:           2432 ave        2445 max        2421 min

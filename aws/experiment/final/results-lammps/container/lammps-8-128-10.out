@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 53.12 out of 2048 (2.59%)
   622592 atoms
-  replicate CPU = 0.005 seconds
+  replicate CPU = 0.004 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 331 | 331 | 331 Mbytes
         80   298.00108     -113.27171      8403.2885     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4034     -111.58383     -1.6989         7019230      
        100   302.4576      -113.28495      10433.729     -111.58629     -1.6986607      7019230      
-Loop time of 44.0997 on 128 procs for 100 steps with 622592 atoms
+Loop time of 44.1307 on 128 procs for 100 steps with 622592 atoms
 
-Performance: 0.020 ns/day, 1224.992 hours/ns, 2.268 timesteps/s, 1.412 Matom-step/s
+Performance: 0.020 ns/day, 1225.852 hours/ns, 2.266 timesteps/s, 1.411 Matom-step/s
 99.7% CPU use with 128 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 21.384     | 24.206     | 26.949     |  24.3 | 54.89
-Neigh   | 0.40942    | 0.41381    | 0.41958    |   0.4 |  0.94
-Comm    | 0.081694   | 2.6227     | 5.6382     |  75.2 |  5.95
-Output  | 0.0071464  | 0.044877   | 0.067923   |  11.8 |  0.10
-Modify  | 16.64      | 16.81      | 17.089     |   5.1 | 38.12
-Other   |            | 0.001995   |            |       |  0.00
+Pair    | 21.404     | 24.204     | 26.962     |  24.3 | 54.85
+Neigh   | 0.40961    | 0.41365    | 0.41949    |   0.4 |  0.94
+Comm    | 0.080608   | 2.6347     | 5.6297     |  75.1 |  5.97
+Output  | 0.0065816  | 0.045138   | 0.068565   |  12.1 |  0.10
+Modify  | 16.659     | 16.831     | 17.115     |   5.2 | 38.14
+Other   |            | 0.001985   |            |       |  0.00
 
 Nlocal:           4864 ave        4876 max        4854 min
 Histogram: 5 12 13 13 22 34 16 7 5 1

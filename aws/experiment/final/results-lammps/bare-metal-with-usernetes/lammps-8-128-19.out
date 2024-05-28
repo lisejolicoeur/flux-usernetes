@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.059 seconds
+  read_data CPU = 0.045 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   8 by 4 by 4 MPI processor grid
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 331 | 331 | 331 Mbytes
         80   298.00108     -113.27171      8403.2885     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4034     -111.58383     -1.6989         7019230      
        100   302.4576      -113.28495      10433.729     -111.58629     -1.6986607      7019230      
-Loop time of 44.896 on 128 procs for 100 steps with 622592 atoms
+Loop time of 44.7886 on 128 procs for 100 steps with 622592 atoms
 
-Performance: 0.019 ns/day, 1247.111 hours/ns, 2.227 timesteps/s, 1.387 Matom-step/s
+Performance: 0.019 ns/day, 1244.128 hours/ns, 2.233 timesteps/s, 1.390 Matom-step/s
 99.5% CPU use with 128 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 21.433     | 24.212     | 26.949     |  24.2 | 53.93
-Neigh   | 0.42085    | 0.42619    | 0.4352     |   0.4 |  0.95
-Comm    | 0.11247    | 2.7045     | 5.6217     |  73.2 |  6.02
-Output  | 0.0066479  | 0.042243   | 0.064564   |  11.3 |  0.09
-Modify  | 17.374     | 17.509     | 17.719     |   3.7 | 39.00
-Other   |            | 0.001888   |            |       |  0.00
+Pair    | 21.338     | 24.207     | 26.932     |  24.3 | 54.05
+Neigh   | 0.42084    | 0.42586    | 0.43501    |   0.5 |  0.95
+Comm    | 0.10831    | 2.6676     | 5.6861     |  73.9 |  5.96
+Output  | 0.0094151  | 0.045964   | 0.071824   |  10.5 |  0.10
+Modify  | 17.3       | 17.44      | 17.675     |   3.9 | 38.94
+Other   |            | 0.001887   |            |       |  0.00
 
 Nlocal:           4864 ave        4876 max        4854 min
 Histogram: 5 12 13 13 22 34 16 7 5 1

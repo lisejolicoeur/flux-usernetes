@@ -6,7 +6,10 @@ import json
 import time
 import fnmatch
 
-from metricsoperator.metrics.network.osu_benchmark import parse_barrier_section, parse_multi_section
+from metricsoperator.metrics.network.osu_benchmark import (
+    parse_barrier_section,
+    parse_multi_section,
+)
 import metricsoperator.utils as utils
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -32,7 +35,6 @@ def get_parser():
         default=os.path.join(here, "img"),
     )
     return parser
-
 
 
 def recursive_find(base, pattern="*.*"):
@@ -88,31 +90,36 @@ def plot_results(dfs, img):
     for slug, df in dfs.items():
         print(slug)
         if slug == "latency":
-            combined = df.groupby(['experiment', 'size']).mean()
+            combined = df.groupby(["experiment", "size"]).mean()
             combined.to_csv(os.path.join(img, "osu-latency-only.csv"))
         if "size" in df.columns:
-            print(df.groupby(['experiment','nodes', 'size']).mean())
-            print(df.groupby(['experiment','nodes', 'size']).std())
+            print(df.groupby(["experiment", "nodes", "size"]).mean())
+            print(df.groupby(["experiment", "nodes", "size"]).std())
         else:
-            print(df.groupby(['experiment','nodes']).mean())
-            print(df.groupby(['experiment','nodes']).std())
+            print(df.groupby(["experiment", "nodes"]).mean())
+            print(df.groupby(["experiment", "nodes"]).std())
 
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
-
         # Barrier we can show across nodes
         if slug == "barrier":
-
             # Remove usernetes from the set
             without_usernetes = df[df.experiment != "usernetes"]
 
-            # Separate x and y - latency (y) is a function of size (x)        
+            # Separate x and y - latency (y) is a function of size (x)
             x = "ranks"
             y = "average_latency_us"
 
             # for sty in plt.style.available:
             ax = sns.lineplot(
-                data=df, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment", palette="Set1"
+                data=df,
+                x=x,
+                y=y,
+                markers=True,
+                dashes=True,
+                errorbar=("ci", 95),
+                hue="experiment",
+                palette="Set1",
             )
             plt.title(f"{slug} (y) as a function of size (x) across nodes")
             ax.set_xlabel("size (logscale)", fontsize=16)
@@ -127,7 +134,14 @@ def plot_results(dfs, img):
             plt.close()
 
             ax = sns.lineplot(
-                data=without_usernetes, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment", palette="Set1"
+                data=without_usernetes,
+                x=x,
+                y=y,
+                markers=True,
+                dashes=True,
+                errorbar=("ci", 95),
+                hue="experiment",
+                palette="Set1",
             )
             plt.title(f"{slug} (y) as a function of size (x) across nodes")
             ax.set_xlabel("size (logscale)", fontsize=16)
@@ -137,7 +151,9 @@ def plot_results(dfs, img):
             plt.xscale("log")
             plt.yscale("log")
             plt.subplots_adjust(left=0.2, bottom=0.2)
-            plt.savefig(os.path.join(img, f"osu-{slug}-across-nodes-without-usernetes.png"))
+            plt.savefig(
+                os.path.join(img, f"osu-{slug}-across-nodes-without-usernetes.png")
+            )
             plt.clf()
             plt.close()
             continue
@@ -150,15 +166,22 @@ def plot_results(dfs, img):
             # Remove usernetes from the set
             without_usernetes = df[df.experiment != "usernetes"]
 
-            # Separate x and y - latency (y) is a function of size (x)        
+            # Separate x and y - latency (y) is a function of size (x)
             x = "size"
             if slug == "barrier":
                 x = "ranks"
             y = "average_latency_us"
-            
+
             # for sty in plt.style.available:
             ax = sns.lineplot(
-                data=subset, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment", palette="Set1"
+                data=subset,
+                x=x,
+                y=y,
+                markers=True,
+                dashes=True,
+                errorbar=("ci", 95),
+                hue="experiment",
+                palette="Set1",
             )
             plt.title(f"{slug} (y) as a function of {x} (x) on {nodes} nodes")
             ax.set_xlabel(x + " (logscale)", fontsize=16)
@@ -173,7 +196,14 @@ def plot_results(dfs, img):
             plt.close()
 
             ax = sns.lineplot(
-                data=without_usernetes, x=x, y=y, markers=True, dashes=True, errorbar=("ci", 95), hue="experiment", palette="Set1"
+                data=without_usernetes,
+                x=x,
+                y=y,
+                markers=True,
+                dashes=True,
+                errorbar=("ci", 95),
+                hue="experiment",
+                palette="Set1",
             )
             plt.title(f"{slug} (y) as a function of {x} (x) on {nodes} nodes")
             ax.set_xlabel(x + " (logscale)", fontsize=16)
@@ -183,7 +213,9 @@ def plot_results(dfs, img):
             plt.xscale("log")
             plt.yscale("log")
             plt.subplots_adjust(left=0.2, bottom=0.2)
-            plt.savefig(os.path.join(img, f"osu-{slug}-{nodes}-nodes-without-usernetes.png"))
+            plt.savefig(
+                os.path.join(img, f"osu-{slug}-{nodes}-nodes-without-usernetes.png")
+            )
             plt.clf()
             plt.close()
 
@@ -203,7 +235,7 @@ def parse_data(files):
         ]
     )
     barrier_idx = 0
-    
+
     df_latency = pandas.DataFrame(
         columns=[
             "ranks",
@@ -227,7 +259,7 @@ def parse_data(files):
         ]
     )
     reduce_idx = 0
-    
+
     for filename in files:
         parsed = os.path.relpath(filename, here)
         pieces = parsed.split(os.sep)
@@ -262,25 +294,45 @@ def parse_data(files):
 
         # Full command is the first item
         if "barrier" in filename:
-            result = float(item.strip().split('\n')[-1].strip())
-            df_barrier.loc[barrier_idx, :] = [tasks, experiment, iteration, result, nodes]
-            barrier_idx +=1
+            result = float(item.strip().split("\n")[-1].strip())
+            df_barrier.loc[barrier_idx, :] = [
+                tasks,
+                experiment,
+                iteration,
+                result,
+                nodes,
+            ]
+            barrier_idx += 1
             continue
-        
+
         if "latency" in filename:
-             result = parse_multi_section(item.split('\n'))
-             for row in result['matrix']:
-                 df_latency.loc[latency_idx, :] = [tasks, experiment, iteration, row[0], row[1], nodes]
-                 latency_idx +=1
-             continue
+            result = parse_multi_section(item.split("\n"))
+            for row in result["matrix"]:
+                df_latency.loc[latency_idx, :] = [
+                    tasks,
+                    experiment,
+                    iteration,
+                    row[0],
+                    row[1],
+                    nodes,
+                ]
+                latency_idx += 1
+            continue
 
         if "reduce" in filename:
-             result = parse_multi_section([x for x in item.split('\n') if x])
-             for row in result['matrix']:
-                 df_reduce.loc[reduce_idx, :] = [tasks, experiment, iteration, row[0], row[1], nodes]
-                 reduce_idx +=1
-        
-    dfs = {'all_reduce': df_reduce, "latency": df_latency, "barrier": df_barrier}
+            result = parse_multi_section([x for x in item.split("\n") if x])
+            for row in result["matrix"]:
+                df_reduce.loc[reduce_idx, :] = [
+                    tasks,
+                    experiment,
+                    iteration,
+                    row[0],
+                    row[1],
+                    nodes,
+                ]
+                reduce_idx += 1
+
+    dfs = {"all_reduce": df_reduce, "latency": df_latency, "barrier": df_barrier}
     return dfs
 
 

@@ -75,12 +75,13 @@ def main():
     # This does the actual parsing of data into a formatted variant
     # Has keys results, iters, and columns
     df = parse_data(files)
-    df.to_csv(os.path.join(outdir, "lammps-times.csv"))
-    plot_results(df, outdir)
 
     # Show means grouped by experiment to sanity check plots
     print(df.groupby(["experiment", "nodes"]).mean())
     print(df.groupby(["experiment", "nodes"]).std())
+    return 
+    df.to_csv(os.path.join(outdir, "lammps-times.csv"))
+    plot_results(df, outdir)
 
 
 def plot_results(df, outdir):
@@ -212,29 +213,14 @@ def plot_results(df, outdir):
         xlabel="Nodes",
         ylabel="Time (seconds)",
     )
-    make_plot(
-        subset,
-        title="LAMMPS Times (16 x 16 x 8) Across HPC Setups and Scale",
-        tag="lammps-by-nodes-violin-hpc",
-        ydimension="time_seconds",
-        xdimension="nodes",
-        palette=palette,
-        outdir=outdir,
-        ext="png",
-        plotname="lammps-by-nodes-violin-hpc",
-        hue="experiment",
-        plot_type="violin",
-        xlabel="Nodes",
-        ylabel="Time (seconds)",
-    )
 
     # Now combine all usernetes vs hpc
     subset.experiment = "hpc"
-    combined = pandas.concat([subset, df[df.experiment=='usernetes']])
+    combined = pandas.concat([subset, df[df.experiment == "usernetes"]])
 
     palette = OrderedDict()
-    palette["hpc"] = '#e48522'
-    palette["usernetes"] = "#2480ec" 
+    palette["hpc"] = "#e48522"
+    palette["usernetes"] = "#2480ec"
 
     make_plot(
         combined,
@@ -251,9 +237,11 @@ def plot_results(df, outdir):
         xlabel="Nodes",
         ylabel="Time (seconds)",
     )
-             
+
     import IPython
+
     IPython.embed()
+
 
 def parse_data(files):
     """
@@ -334,10 +322,16 @@ def make_plot(
     if plot_type == "violin":
         ax = plotfunc(
             x=xdimension, y=ydimension, hue=hue, data=df, linewidth=0.8, palette=palette
-        )    
+        )
     else:
         ax = plotfunc(
-            x=xdimension, y=ydimension, hue=hue, data=df, linewidth=0.8, palette=palette, whis=[5, 95]
+            x=xdimension,
+            y=ydimension,
+            hue=hue,
+            data=df,
+            linewidth=0.8,
+            palette=palette,
+            whis=[5, 95],
         )
 
     plt.title(title)

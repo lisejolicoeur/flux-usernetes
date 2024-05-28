@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.060 seconds
+  read_data CPU = 0.051 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   8 by 4 by 4 MPI processor grid
@@ -51,19 +51,19 @@ Per MPI rank memory allocation (min/avg/max) = 331 | 331 | 331 Mbytes
         80   298.00108     -113.27171      8403.2885     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4034     -111.58383     -1.6989         7019230      
        100   302.4576      -113.28495      10433.729     -111.58629     -1.6986607      7019230      
-Loop time of 44.8774 on 128 procs for 100 steps with 622592 atoms
+Loop time of 45.028 on 128 procs for 100 steps with 622592 atoms
 
-Performance: 0.019 ns/day, 1246.595 hours/ns, 2.228 timesteps/s, 1.387 Matom-step/s
+Performance: 0.019 ns/day, 1250.778 hours/ns, 2.221 timesteps/s, 1.383 Matom-step/s
 99.5% CPU use with 128 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 21.425     | 24.244     | 27.005     |  24.1 | 54.02
-Neigh   | 0.41032    | 0.41459    | 0.42667    |   0.5 |  0.92
-Comm    | 0.10511    | 2.6745     | 5.6715     |  73.8 |  5.96
-Output  | 0.0064636  | 0.042061   | 0.066833   |  11.1 |  0.09
-Modify  | 17.339     | 17.5       | 17.762     |   4.7 | 39.00
+Pair    | 21.356     | 24.248     | 27.102     |  24.3 | 53.85
+Neigh   | 0.40955    | 0.41472    | 0.42244    |   0.5 |  0.92
+Comm    | 0.082111   | 2.7117     | 5.8221     |  74.4 |  6.02
+Output  | 0.006825   | 0.052842   | 0.081537   |  13.7 |  0.12
+Modify  | 17.406     | 17.599     | 17.913     |   5.6 | 39.08
 Other   |            | 0.001917   |            |       |  0.00
 
 Nlocal:           4864 ave        4876 max        4854 min

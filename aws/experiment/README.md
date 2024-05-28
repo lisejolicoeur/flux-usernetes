@@ -4,14 +4,16 @@ Note that we re-did the osu all reduce on 2 nodes in [final/osu-followup](final/
 
 ### Lammps and OSU Benchmarks
 
-- Start time: 10:29 am, March 10 2024
-- End time: 11:53pm
+- Start time: 6:35 am, May 28, 2024
+- End time:  4:20pm 
 - hpc7g.4xlarge x 33
-- Estimated compute cost $1.70 * 33 * 13 hours 24 minutes.
+- Estimated compute cost: $56 per hour.
+
+$1.70 * 33 * 13 hours 24 minutes.
 
 ```bash
      STATE NNODES   NCORES    NGPUS NODELIST
-      free     33      528        0 i-09b9c39571c635328,i-008f0e304d40ca3a2,i-028d109545c7334f8,i-06e26186f161a497a,i-0d44943116b931622,i-0742dc17f9707ecd4,i-0a3cb311d11f5b22a,i-0092e145bacacbb50,i-01ae08da1fefbbc5a,i-0544124d44f45121f,i-0477541c56fbf8333,i-00a6e26c9695fe255,i-06d868abf3f33f852,i-08751f901b3d8cd91,i-02d69237f31355786,i-09425b966ee3c9530,i-09da2dea953dd1bed,i-06ed29b5f2be73029,i-029e274e9c87e92ee,i-0012875cd3aabf5c6,i-020ce554596630f85,i-0a1047f24d3f30c9f,i-0889c960423636da3,i-0a458abb18af676e8,i-09a42753c5b24aa78,i-0997f355da1326bc1,i-024f98dea1d5390a1,i-022ead1bb3f3cfd88,i-08d11416273066ef9,i-02fda578dbaeb41c5,i-0a2a4357b398e5531,i-01d328f0112b6bca5,i-04d7fa1b8f3897468
+      free     33      528        0 i-025dbde9417bb3475,i-09124ea65570893e1,i-00d031d7d0229f067,i-0f918aa45d74423dc,i-0b0bffe6cfdddf1e0,i-0051360b6972b9793,i-0a9e61f51088d629a,i-096d773b3c1c4865b,i-07e72f800aeac91ee,i-072271fb5d87f13ff,i-032d81636b0368b02,i-0ed9701caad786099,i-08034e7752f4ff06b,i-062f6ef897a2d348a,i-0de1b95852bf44467,i-0100ff6d7226dc37d,i-010a805233309a84c,i-05155a38136e76e2d,i-0dba099e5c631312c,i-00f9aa65f556f02d9,i-05d44ce89b17319b8,i-0ed0106fa11d111f5,i-096fc591e9e10c920,i-0db82f08286a82a70,i-09f620a14a17920e6,i-0771fe5fdc1fc8406,i-0a44a5332b1d7dfc4,i-062288504aa3d1887,i-06d3c1ae7993992b9,i-0b1466cde74e550a9,i-05371ba854ad08db1,i-05c66519131b8cd62,i-0582c6de931684c30
  allocated      0        0        0 
       down      0        0        0 
 ```
@@ -37,7 +39,7 @@ Runs across sizes for each of the following:
 - 8, 128
 - 4, 64
 
-```bash
+```console
 screen /bin/bash
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
@@ -48,7 +50,7 @@ for i in $(seq 1 20); do
 done
 ```
 
-Now container runs for lammps.
+Now container runs for lammps. This container should already be on the system.
 
 ```bash
 cd /home/ubuntu/lammps
@@ -61,7 +63,7 @@ mkdir -p ./results/container
 
 And the experiments!
 
-```
+```console
 # Run the same loop, but in the container
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
@@ -71,6 +73,7 @@ for i in $(seq 1 20); do
     flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container /usr/bin/lmp -v x 16 -v y 16 -v z 8 -in ./in.reaxff.hns -nocite |& tee ./results/container/lammps-4-64-${i}.out
 done
 ```
+
 You can sanity check each of the above as you go - there should be 80 files in each directory.
 Now we are going to switch over the osu to run on bare metal, before we start usernetes.
 
@@ -151,9 +154,47 @@ flux exec -x 0 -r all --dir /home/ubuntu/usernetes /bin/bash ./start-worker.sh
 
 I sourced my bash profile and then ensured I had my nodes, and saved them too.
 
-```
+```bash
 . ~/.bashrc
 kubectl get nodes
+```
+```console
+NAME                      STATUS   ROLES           AGE    VERSION
+u7s-i-0051360b6972b9793   Ready    <none>          31s    v1.29.1
+u7s-i-00d031d7d0229f067   Ready    <none>          31s    v1.29.1
+u7s-i-00f9aa65f556f02d9   Ready    <none>          31s    v1.29.1
+u7s-i-0100ff6d7226dc37d   Ready    <none>          31s    v1.29.1
+u7s-i-010a805233309a84c   Ready    <none>          31s    v1.29.1
+u7s-i-025dbde9417bb3475   Ready    control-plane   2m6s   v1.29.1
+u7s-i-032d81636b0368b02   Ready    <none>          31s    v1.29.1
+u7s-i-05155a38136e76e2d   Ready    <none>          31s    v1.29.1
+u7s-i-05371ba854ad08db1   Ready    <none>          30s    v1.29.1
+u7s-i-0582c6de931684c30   Ready    <none>          31s    v1.29.1
+u7s-i-05c66519131b8cd62   Ready    <none>          31s    v1.29.1
+u7s-i-05d44ce89b17319b8   Ready    <none>          31s    v1.29.1
+u7s-i-062288504aa3d1887   Ready    <none>          31s    v1.29.1
+u7s-i-062f6ef897a2d348a   Ready    <none>          31s    v1.29.1
+u7s-i-06d3c1ae7993992b9   Ready    <none>          31s    v1.29.1
+u7s-i-072271fb5d87f13ff   Ready    <none>          32s    v1.29.1
+u7s-i-0771fe5fdc1fc8406   Ready    <none>          22s    v1.29.1
+u7s-i-07e72f800aeac91ee   Ready    <none>          31s    v1.29.1
+u7s-i-08034e7752f4ff06b   Ready    <none>          31s    v1.29.1
+u7s-i-09124ea65570893e1   Ready    <none>          31s    v1.29.1
+u7s-i-096d773b3c1c4865b   Ready    <none>          30s    v1.29.1
+u7s-i-096fc591e9e10c920   Ready    <none>          30s    v1.29.1
+u7s-i-09f620a14a17920e6   Ready    <none>          30s    v1.29.1
+u7s-i-0a44a5332b1d7dfc4   Ready    <none>          31s    v1.29.1
+u7s-i-0a9e61f51088d629a   Ready    <none>          32s    v1.29.1
+u7s-i-0b0bffe6cfdddf1e0   Ready    <none>          31s    v1.29.1
+u7s-i-0b1466cde74e550a9   Ready    <none>          31s    v1.29.1
+u7s-i-0db82f08286a82a70   Ready    <none>          31s    v1.29.1
+u7s-i-0dba099e5c631312c   Ready    <none>          31s    v1.29.1
+u7s-i-0de1b95852bf44467   Ready    <none>          31s    v1.29.1
+u7s-i-0ed0106fa11d111f5   Ready    <none>          31s    v1.29.1
+u7s-i-0ed9701caad786099   Ready    <none>          30s    v1.29.1
+u7s-i-0f918aa45d74423dc   Ready    <none>          31s    v1.29.1
+```
+```bash
 kubectl get nodes -o json > ../osu/results/nodes-33.json
 ```
 
@@ -168,7 +209,7 @@ source <(kubectl completion bash)
 Clone the repository with configs, etc.
 
 ```bash
-git clone https://github.com/converged-computing/flux-usernetes /home/ubuntu/lammps/flux-usernetes
+git clone -b add-experiment-march-10 https://github.com/converged-computing/flux-usernetes /home/ubuntu/lammps/flux-usernetes
 
 # This is run from /home/ubuntu/lammps
 kubectl apply -f ./flux-usernetes/aws/examples/lammps/crd/efa-device-plugin.yaml 
@@ -198,6 +239,7 @@ kubectl apply -f ./minicluster-efa.yaml
 kubectl delete -f ./minicluster-efa.yaml
 ```
 
+Note that I did `kubectl get pods -o wide` to sanity check we had an assignment of one pod per node (we did)!
 Now we will need to run for each size mentioned in the experiment file:
 
 ```
@@ -207,6 +249,8 @@ Now we will need to run for each size mentioned in the experiment file:
 # 8, 128
 # 4, 64
 ```
+
+To be clear, you need to change the size in the minicluster-efa.yaml for each of the above, coordinated with the loop below (which is saving the result to that path).
 
 ```bash
 size=4
@@ -284,7 +328,7 @@ for i in $(seq 1 20); do
 done
 ```
 
-After this, we go back and run the initial bare metal runs again, for lammps and osu benchmarks. The difference is that we have usernestes running in the background.
+After this, we go back and run the initial bare metal runs again, for lammps and osu benchmarks. The difference is that we have usernetes running in the background.
 
 ```bash
 cd /home/ubuntu/lammps
@@ -367,7 +411,7 @@ And some extra flux info:
 $ flux resource info
 33 Nodes, 528 Cores, 0 GPUs
 ubuntu@i-09b9c39571c635328:~$ flux resource R
-{"version": 1, "execution": {"R_lite": [{"rank": "0-32", "children": {"core": "0-15"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["i-09b9c39571c635328,i-008f0e304d40ca3a2,i-028d109545c7334f8,i-06e26186f161a497a,i-0d44943116b931622,i-0742dc17f9707ecd4,i-0a3cb311d11f5b22a,i-0092e145bacacbb50,i-01ae08da1fefbbc5a,i-0544124d44f45121f,i-0477541c56fbf8333,i-00a6e26c9695fe255,i-06d868abf3f33f852,i-08751f901b3d8cd91,i-02d69237f31355786,i-09425b966ee3c9530,i-09da2dea953dd1bed,i-06ed29b5f2be73029,i-029e274e9c87e92ee,i-0012875cd3aabf5c6,i-020ce554596630f85,i-0a1047f24d3f30c9f,i-0889c960423636da3,i-0a458abb18af676e8,i-09a42753c5b24aa78,i-0997f355da1326bc1,i-024f98dea1d5390a1,i-022ead1bb3f3cfd88,i-08d11416273066ef9,i-02fda578dbaeb41c5,i-0a2a4357b398e5531,i-01d328f0112b6bca5,i-04d7fa1b8f3897468"]}}
+{"version": 1, "execution": {"R_lite": [{"rank": "0-32", "children": {"core": "0-15"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["i-025dbde9417bb3475,i-09124ea65570893e1,i-00d031d7d0229f067,i-0f918aa45d74423dc,i-0b0bffe6cfdddf1e0,i-0051360b6972b9793,i-0a9e61f51088d629a,i-096d773b3c1c4865b,i-07e72f800aeac91ee,i-072271fb5d87f13ff,i-032d81636b0368b02,i-0ed9701caad786099,i-08034e7752f4ff06b,i-062f6ef897a2d348a,i-0de1b95852bf44467,i-0100ff6d7226dc37d,i-010a805233309a84c,i-05155a38136e76e2d,i-0dba099e5c631312c,i-00f9aa65f556f02d9,i-05d44ce89b17319b8,i-0ed0106fa11d111f5,i-096fc591e9e10c920,i-0db82f08286a82a70,i-09f620a14a17920e6,i-0771fe5fdc1fc8406,i-0a44a5332b1d7dfc4,i-062288504aa3d1887,i-06d3c1ae7993992b9,i-0b1466cde74e550a9,i-05371ba854ad08db1,i-05c66519131b8cd62,i-0582c6de931684c30"]}}
 ```
 
 To plot results for LAMMPS
