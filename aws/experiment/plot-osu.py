@@ -92,6 +92,8 @@ def plot_results(dfs, img):
         if slug == "latency":
             combined = df.groupby(["experiment", "size"]).mean()
             combined.to_csv(os.path.join(img, "osu-latency-only.csv"))
+            combined_nodes = df.groupby(["experiment", "nodes", "size"]).mean()
+            combined_nodes.to_csv(os.path.join(img, "osu-latency-node-sizes.csv"))
         if "size" in df.columns:
             print(df.groupby(["experiment", "nodes", "size"]).mean())
             print(df.groupby(["experiment", "nodes", "size"]).std())
@@ -99,6 +101,7 @@ def plot_results(dfs, img):
             print(df.groupby(["experiment", "nodes"]).mean())
             print(df.groupby(["experiment", "nodes"]).std())
 
+    return
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
         # Barrier we can show across nodes
