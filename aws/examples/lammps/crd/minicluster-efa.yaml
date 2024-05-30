@@ -23,8 +23,6 @@ spec:
       resources:
         limits:
           vpc.amazonaws.com/efa: 1
-          cpu: "7"
         requests:
-          cpu: "7"
           vpc.amazonaws.com/efa: 1
 

@@ -1,0 +1,116 @@
+{
+   "grated-ricecake": {
+      "model": {
+         "StandardScaler": {
+            "with_std": true
+         },
+         "LinearRegression": {
+            "optimizer": [
+               "SGD",
+               {
+                  "lr": [
+                     "Constant",
+                     {
+                        "learning_rate": 0.01
+                     }
+                  ]
+               }
+            ],
+            "loss": [
+               "Squared"
+            ],
+            "l2": 0.0,
+            "l1": 0.0,
+            "intercept_init": 0.0,
+            "intercept_lr": [
+               "Constant",
+               {
+                  "learning_rate": 0.1
+               }
+            ],
+            "clip_gradient": 1000000000000.0,
+            "initializer": [
+               "Zeros"
+            ]
+         }
+      },
+      "stats": {
+         "predict": {
+            "n_calls": 250,
+            "mean_duration": 887334,
+            "mean_duration_human": "887\u03bcs334ns",
+            "ewm_duration": 920905,
+            "ewm_duration_human": "920\u03bcs905ns"
+         },
+         "learn": {
+            "n_calls": 1000,
+            "mean_duration": 1134808,
+            "mean_duration_human": "1ms134\u03bcs808ns",
+            "ewm_duration": 1104062,
+            "ewm_duration_human": "1ms104\u03bcs62ns"
+         }
+      },
+      "metrics": {
+         "MAE": 1.5520972515359304,
+         "RMSE": 2.177327734883431,
+         "SMAPE": 38.69728186499292
+      }
+   },
+   "quirky-rabbit": {
+      "model": {
+         "C": 0.01,
+         "mode": 2,
+         "eps": 0.1,
+         "learn_intercept": false
+      },
+      "stats": {
+         "predict": {
+            "n_calls": 250,
+            "mean_duration": 719426,
+            "mean_duration_human": "719\u03bcs426ns",
+            "ewm_duration": 744107,
+            "ewm_duration_human": "744\u03bcs107ns"
+         },
+         "learn": {
+            "n_calls": 1000,
+            "mean_duration": 949101,
+            "mean_duration_human": "949\u03bcs101ns",
+            "ewm_duration": 924661,
+            "ewm_duration_human": "924\u03bcs661ns"
+         }
+      },
+      "metrics": {
+         "MAE": 4.173966708829757,
+         "RMSE": 5.35988223246561,
+         "SMAPE": 58.86132494082691
+      }
+   },
+   "swampy-knife": {
+      "model": {
+         "alpha": 1,
+         "beta": 1,
+         "smoothing": null
+      },
+      "stats": {
+         "predict": {
+            "n_calls": 250,
+            "mean_duration": 699206,
+            "mean_duration_human": "699\u03bcs206ns",
+            "ewm_duration": 711375,
+            "ewm_duration_human": "711\u03bcs375ns"
+         },
+         "learn": {
+            "n_calls": 1000,
+            "mean_duration": 1009666,
+            "mean_duration_human": "1ms9\u03bcs666ns",
+            "ewm_duration": 985753,
+            "ewm_duration_human": "985\u03bcs753ns"
+         }
+      },
+      "metrics": {
+         "MAE": 2.217161228476593,
+         "RMSE": 2.783633921524865,
+         "SMAPE": 40.73274845540383
+      }
+   }
+}

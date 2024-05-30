@@ -1,0 +1,367 @@
+{
+    "Instances": [
+        {
+            "InstanceId": "i-025dbde9417bb3475",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-09124ea65570893e1",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-00d031d7d0229f067",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0f918aa45d74423dc",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0b0bffe6cfdddf1e0",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-8778b123b94708951"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0051360b6972b9793",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0a9e61f51088d629a",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-096d773b3c1c4865b",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-07e72f800aeac91ee",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-072271fb5d87f13ff",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-032d81636b0368b02",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-8778b123b94708951"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0ed9701caad786099",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-08034e7752f4ff06b",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-062f6ef897a2d348a",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0de1b95852bf44467",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-8778b123b94708951"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0100ff6d7226dc37d",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-3ac5cd0928f8b6566"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-010a805233309a84c",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-046385a39623f02f6"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-05155a38136e76e2d",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0dba099e5c631312c",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-00f9aa65f556f02d9",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-05d44ce89b17319b8",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-dc713d1d1a6b6b031"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0ed0106fa11d111f5",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-096fc591e9e10c920",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-8778b123b94708951"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0db82f08286a82a70",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-09f620a14a17920e6",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0771fe5fdc1fc8406",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-3ac5cd0928f8b6566"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0a44a5332b1d7dfc4",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-5ff8adbee5af642f1"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-062288504aa3d1887",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-06d3c1ae7993992b9",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0b1466cde74e550a9",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-314e33bb77bd0bbb4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-05371ba854ad08db1",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-93200130103c458fd"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-05c66519131b8cd62",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        },
+        {
+            "InstanceId": "i-0582c6de931684c30",
+            "InstanceType": "hpc7g.4xlarge",
+            "NetworkNodes": [
+                "nn-12b685cf936f17170",
+                "nn-e0457955e96fa3b04",
+                "nn-106e39cf022c13db4"
+            ],
+            "AvailabilityZone": "us-east-1a",
+            "ZoneId": "use1-az6"
+        }
+    ]
+}

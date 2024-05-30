@@ -18,6 +18,7 @@ locals {
   volume_size = 100
 
   # Set autoscaling to consistent size so we don't scale for now
+  # We need one extra for the control plane, etc for a size 32 cluster
   min_size     = 33
   max_size     = 33
   desired_size = 33
