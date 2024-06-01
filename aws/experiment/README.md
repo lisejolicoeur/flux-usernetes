@@ -4,8 +4,8 @@ Note that we re-did the osu all reduce on 2 nodes in [final/osu-followup](final/
 
 ### Lammps and OSU Benchmarks
 
-- Start time: 6:35 am, May 28, 2024
-- End time:  4:20pm 
+- Start time: 
+- End time:   
 - hpc7g.4xlarge x 33
 - Estimated compute cost: $56 per hour.
 
@@ -101,6 +101,7 @@ for i in $(seq 1 20); do
     flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_barrier  |& tee ./results/bare-metal/osu_barrier-8-128-${i}.out
     flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_barrier  |& tee ./results/bare-metal/osu_barrier-4-64-${i}.out
     flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_latency  |& tee ./results/bare-metal/osu_latency-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw  |& tee ./results/bare-metal/osu_bw-${i}.out
 done
 ```
 
@@ -119,15 +120,16 @@ Now the experiment loop again
 ```console
 for i in $(seq 1 20); do 
     echo "Running iteration $i"
-    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce  |& tee ./results/container/all_reduce-32-512-${i}.out
-    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce  |& tee ./results/container/all_reduce-16-256-${i}.out
-    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce  |& tee ./results/container/all_reduce-8-128-${i}.out
-    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce  |& tee ./results/container/all_reduce-4-64-${i}.out
-    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container/osu_barrier-32-512-${i}.out
-    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container/osu_barrier-16-256-${i}.out
-    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container/osu_barrier-8-128-${i}.out
-    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container/osu_barrier-4-64-${i}.out
-    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_latency  |& tee ./results/container/osu_latency-${i}.out
+    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce |& tee ./results/container/all_reduce-32-512-${i}.out
+    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce |& tee ./results/container/all_reduce-16-256-${i}.out
+    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce |& tee ./results/container/all_reduce-8-128-${i}.out
+    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_allreduce |& tee ./results/container/all_reduce-4-64-${i}.out
+    flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier |& tee ./results/container/osu_barrier-32-512-${i}.out
+    flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier |& tee ./results/container/osu_barrier-16-256-${i}.out
+    flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier |& tee ./results/container/osu_barrier-8-128-${i}.out
+    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier |& tee ./results/container/osu_barrier-4-64-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_latency |& tee ./results/container/osu_latency-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_bw |& tee ./results/container/osu_bw-${i}.out
 done
 ```
 
@@ -209,7 +211,7 @@ source <(kubectl completion bash)
 Clone the repository with configs, etc.
 
 ```bash
-git clone -b add-experiment-march-10 https://github.com/converged-computing/flux-usernetes /home/ubuntu/lammps/flux-usernetes
+git clone -b experiment-june-1 https://github.com/converged-computing/flux-usernetes /home/ubuntu/lammps/flux-usernetes
 
 # This is run from /home/ubuntu/lammps
 kubectl apply -f ./flux-usernetes/aws/examples/lammps/crd/efa-device-plugin.yaml 
@@ -325,6 +327,15 @@ for i in $(seq 1 20); do
     sleep 10
     kubectl logs ${pod} -f |& tee ./results/usernetes/osu-latency-${size}-${i}.out
     kubectl delete -f ./crd/minicluster-efa-osu-latency.yaml
+
+    kubectl apply -f ./crd/minicluster-efa-osu-bw.yaml
+    sleep 10
+    pod=$(kubectl get pods -o json | jq -r .items[0].metadata.name)
+    echo "Lead broker pod is ${pod}"
+    kubectl wait --for=condition=ready --timeout=120s pod/${pod}
+    sleep 10
+    kubectl logs ${pod} -f |& tee ./results/usernetes/osu-bw-${size}-${i}.out
+    kubectl delete -f ./crd/minicluster-efa-osu-bw.yaml
 done
 ```
 
@@ -374,6 +385,7 @@ for i in $(seq 1 20); do
     flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_barrier  |& tee ./results/bare-metal-with-usernetes/osu_barrier-8-128-${i}.out
     flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/collective/osu_barrier  |& tee ./results/bare-metal-with-usernetes/osu_barrier-4-64-${i}.out
     flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_latency  |& tee ./results/bare-metal-with-usernetes/osu_latency-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task /usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt/osu_bw |& tee ./results/bare-metal-with-usernetes/osu_bw-${i}.out
 done
 ```
 
@@ -398,8 +410,9 @@ for i in $(seq 1 20); do
     flux run -N 32 --ntasks 512 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container-with-usernetes/osu_barrier-32-512-${i}.out
     flux run -N 16 --ntasks 256 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container-with-usernetes/osu_barrier-16-256-${i}.out
     flux run -N 8 --ntasks 128 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container-with-usernetes/osu_barrier-8-128-${i}.out
-    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier  |& tee ./results/container-with-usernetes/osu_barrier-4-64-${i}.out
-    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_latency  |& tee ./results/container-with-usernetes/osu_latency-${i}.out
+    flux run -N 4 --ntasks 64 -c 1 -o cpu-affinity=per-task singularity exec $container osu_barrier |& tee ./results/container-with-usernetes/osu_barrier-4-64-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_latency |& tee ./results/container-with-usernetes/osu_latency-${i}.out
+    flux run -N 2 --ntasks 2 -c 1 -o cpu-affinity=per-task singularity exec $container osu_bw |& tee ./results/container-with-usernetes/osu_bw-${i}.out
 done
 ```
 

@@ -2,14 +2,15 @@
 # VARIABLES # for you to edit!
 
 locals {
-  name   = "flux"
-  pwd    = basename(path.cwd)
-  region = "us-east-1"
-  ami    = "ami-03bf34a7d8b789694"
+  name      = "flux"
+  pwd       = basename(path.cwd)
+  region    = "us-east-1"
+  ami       = "ami-03bf34a7d8b789694"
+  placement = "eks-efa-testing"
 
   instance_type = "hpc7g.4xlarge"
   vpc_cidr      = "10.0.0.0/16"
-  key_name      = "<your-key>"
+  key_name      = "dinosaur"
 
   # Also important - the m4.xlarge has ens3 and m2.4xlarge has eth0, hpc7g has ens5
   ethernet_device = "ens5"
@@ -258,7 +259,8 @@ resource "aws_iam_policy" "ec2_policy" {
         "ec2:DescribeInstances",
         "ec2:DescribeImages",
         "ec2:DescribeTags",
-        "ec2:DescribeSnapshots"
+        "ec2:DescribeSnapshots",
+        "ec2:DescribeInstanceTopology",
       ],
       "Resource" : "*"
     }]
@@ -330,11 +332,13 @@ resource "aws_launch_template" "launch_template" {
   }
 }
 
+
 resource "aws_autoscaling_group" "autoscaling_group" {
   name              = "${local.name}-autoscaling-group"
   max_size          = local.min_size
   min_size          = local.max_size
   health_check_type = "EC2"
+  placement_group   = local.placement
 
   # This is 25 hours, lord help me if I'm still running experiments that long...
   health_check_grace_period = 90000
