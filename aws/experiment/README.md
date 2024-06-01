@@ -414,17 +414,21 @@ Finally, let's run netmark once with usernetes (I copied this script from my loc
 
 
 ```bash
-mkdir -p /home/ubuntu/netmark/results/bare-metal-usernetes
+mkdir -p /home/ubuntu/netmark/results/container-usernetes
 flux exec -r all --dir /home/ubuntu/netmark singularity pull docker://ghcr.io/rse-ops/netmark-efa:ubuntu-22.04
-flux exec -r all -x 0 mkdir -p /home/ubuntu/netmark/results/bare-metal-usernetes
-cd /home/ubuntu/netmark/results/bare-metal-usernetes
+flux exec -r all -x 0 mkdir -p /home/ubuntu/netmark/results/container-usernetes
+cd /home/ubuntu/netmark/results/container-usernetes
 container=/home/ubuntu/netmark/netmark-efa_ubuntu-22.04.sif 
 ```
 
-Here is bare metal with usernetes running (this should be the fastest):
+Here is bare metal with usernetes running (this should be the fastest). My flux install broke and I had to think on my feet to use mpirun.
 
 ```bash
+# I was originally going to try this:
 flux run -N 32 -ntasks 512 singularity exec $container /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
+
+# But the above seems like it would take impossibly long? Instead I did (hoping to control 1 task per node)
+flux run -N 32 --tasks-per-node 1 singularity exec --workdir /home/ubuntu/netmark/results/container-usernetes $container /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
 ```
 
 This is the usernetes run. We do it interactively and will copy the results files to the host
@@ -441,7 +445,7 @@ Then run netmark, let's created a scoped output directory.
 ```bash
 mkdir /opt/netmark
 cd /opt/netmark
-flux run -N 32 -n 512 /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
+flux run -N 32 --tasks-per-node 1 netmark.x -w 10 -t 20 -c 20 -b 0 -s
 ```
 
 In a different terminal, copy out the results.
@@ -450,19 +454,31 @@ In a different terminal, copy out the results.
 kubectl cp flux-sample-efa-0-xxxx:/opt/netmark ./results/usernetes
 ```
 
-When you are done
+When you are done, we need to bring down the usernetes nodes.
+
 ```
-kubectl delete -f ./minicluster-efa.yaml --wait=true
+cd ~/usernetes
+flux exec -r all --dir /home/ubuntu/usernetes make down
 ```
 
+Then one more run of container:
+
+```bash
+flux exec -r all -x 0 mkdir -p /home/ubuntu/netmark/results/container
+mkdir -p /home/ubuntu/netmark/results/container
+cd /home/ubuntu/netmark/results/container
+container=/home/ubuntu/netmark/netmark-efa_ubuntu-22.04.sif 
+flux run -N 32 --tasks-per-node 1 singularity exec --workdir /home/ubuntu/netmark/results/container $container /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
+```
+
+I couldn't get the full output but I saved the screen stream to file. It's better than nothing.
 And then you are done! Copy the data, or you will be very sad. I did this at several increments, mostly worried about losing data.
 And some extra flux info:
 
 ```
 $ flux resource info
 33 Nodes, 528 Cores, 0 GPUs
-ubuntu@i-09b9c39571c635328:~$ flux resource R
-{"version": 1, "execution": {"R_lite": [{"rank": "0-32", "children": {"core": "0-15"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["i-025dbde9417bb3475,i-09124ea65570893e1,i-00d031d7d0229f067,i-0f918aa45d74423dc,i-0b0bffe6cfdddf1e0,i-0051360b6972b9793,i-0a9e61f51088d629a,i-096d773b3c1c4865b,i-07e72f800aeac91ee,i-072271fb5d87f13ff,i-032d81636b0368b02,i-0ed9701caad786099,i-08034e7752f4ff06b,i-062f6ef897a2d348a,i-0de1b95852bf44467,i-0100ff6d7226dc37d,i-010a805233309a84c,i-05155a38136e76e2d,i-0dba099e5c631312c,i-00f9aa65f556f02d9,i-05d44ce89b17319b8,i-0ed0106fa11d111f5,i-096fc591e9e10c920,i-0db82f08286a82a70,i-09f620a14a17920e6,i-0771fe5fdc1fc8406,i-0a44a5332b1d7dfc4,i-062288504aa3d1887,i-06d3c1ae7993992b9,i-0b1466cde74e550a9,i-05371ba854ad08db1,i-05c66519131b8cd62,i-0582c6de931684c30"]}}
+{"version": 1, "execution": {"R_lite": [{"rank": "0-32", "children": {"core": "0-15"}}], "starttime": 0.0, "expiration": 0.0, "nodelist": ["i-05342cddb1d5e588a,i-04c715913d9e3c8b7,i-05fdfe9cfe36a2d9c,i-076a2e863985642dc,i-0c8c7a993d84cb710,i-09549f380dde16c05,i-07749c75466498890,i-07734cd953035619e,i-016e02971902bd653,i-05753c08c69e09b89,i-0851f99a0032ba34f,i-07de982c53a7e1269,i-0fd32d4b4de9a52fc,i-0fb43e637f1433f4b,i-0a9ecc9961ce70c53,i-001a283495908a2fd,i-00f719a743be592a5,i-050e13126f196ccda,i-0c6fc8a4eea611507,i-096750f3a493af595,i-011e630ae380a3902,i-0af3fd8b505544f7c,i-0301cce2b29265928,i-009a06272fa6f2058,i-0ec8879f3eb417a40,i-0945536058914df26,i-0e7dcc1113c94786c,i-0dc37689ac509d306,i-039696d8f2441c950,i-08433ac2eace66b76,i-0f1874ca8accbadbc,i-04baab5d1bbc299d0,i-0d2ee70154833869a"]}}
 ```
 
 To plot results for LAMMPS
@@ -486,6 +502,90 @@ container                  172.663425   5.802662     25.573411  10.791464       
 container-with-usernetes   172.663425   5.802662     25.492488  10.791464                 0.110515
 usernetes                  172.663425   5.802662     62.431715  10.791464                 0.000000
 ```
+### Network Hints
+
+Here is ifconfig from inside of a usernetes container - not the mtu is not very high. We might need to adjust that to get higher bandwidth?
+
+```console
+cni0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1450
+        inet 10.244.0.1  netmask 255.255.255.0  broadcast 10.244.0.255
+        ether fa:17:4a:58:94:4e  txqueuelen 1000  (Ethernet)
+        RX packets 854020  bytes 158257769 (150.9 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 853446  bytes 222712762 (212.3 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.100.192.2  netmask 255.255.255.0  broadcast 10.100.192.255
+        ether 02:42:0a:64:c0:02  txqueuelen 0  (Ethernet)
+        RX packets 2892606  bytes 541187094 (516.1 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 2779507  bytes 2830131302 (2.6 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+flannel.1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1450
+        inet 10.244.0.0  netmask 255.255.255.255  broadcast 0.0.0.0
+        ether 6a:72:b9:d4:df:da  txqueuelen 0  (Ethernet)
+        RX packets 727287  bytes 81508580 (77.7 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 727285  bytes 148897407 (141.9 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 7892199  bytes 4703611753 (4.3 GiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 7892199  bytes 4703611753 (4.3 GiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+veth5a961ca5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1450
+        ether e2:d5:2e:b9:9b:b3  txqueuelen 0  (Ethernet)
+        RX packets 427236  bytes 85147636 (81.2 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 426221  bytes 111330451 (106.1 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+veth860aee4a: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1450
+        ether 82:24:d8:57:23:cb  txqueuelen 0  (Ethernet)
+        RX packets 426785  bytes 85066455 (81.1 MiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 427306  bytes 111388109 (106.2 MiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+Here is ifconfig from the outside:
+
+```bash
+docker0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+        inet 172.17.0.1  netmask 255.255.0.0  broadcast 172.17.255.255
+        ether 02:42:59:da:10:a2  txqueuelen 0  (Ethernet)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+ens5: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 9001
+        inet 10.0.1.37  netmask 255.255.255.0  broadcast 10.0.1.255
+        inet6 fe80::c31:38ff:fe75:676b  prefixlen 64  scopeid 0x20<link>
+        ether 0e:31:38:75:67:6b  txqueuelen 1000  (Ethernet)
+        RX packets 22219580  bytes 50893779381 (50.8 GB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 15194370  bytes 41824420284 (41.8 GB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10<host>
+        loop  txqueuelen 1000  (Local Loopback)
+        RX packets 61818  bytes 39471814 (39.4 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 61818  bytes 39471814 (39.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+Note the MTU. I'm not sure we can compete with that (1450 vs a minimum of 9001).
+
 
 ### Machine Learning Hybrid Example
 
