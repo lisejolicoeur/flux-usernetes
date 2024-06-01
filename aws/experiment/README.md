@@ -4,19 +4,13 @@ Note that we re-did the osu all reduce on 2 nodes in [final/osu-followup](final/
 
 ### Lammps and OSU Benchmarks
 
-- Start time: 
+- Start time: 6:51am
+- Done creation time: 6:54am
 - End time:   
 - hpc7g.4xlarge x 33
 - Estimated compute cost: $56 per hour.
 
 $1.70 * 33 * 13 hours 24 minutes.
-
-```bash
-     STATE NNODES   NCORES    NGPUS NODELIST
-      free     33      528        0 i-025dbde9417bb3475,i-09124ea65570893e1,i-00d031d7d0229f067,i-0f918aa45d74423dc,i-0b0bffe6cfdddf1e0,i-0051360b6972b9793,i-0a9e61f51088d629a,i-096d773b3c1c4865b,i-07e72f800aeac91ee,i-072271fb5d87f13ff,i-032d81636b0368b02,i-0ed9701caad786099,i-08034e7752f4ff06b,i-062f6ef897a2d348a,i-0de1b95852bf44467,i-0100ff6d7226dc37d,i-010a805233309a84c,i-05155a38136e76e2d,i-0dba099e5c631312c,i-00f9aa65f556f02d9,i-05d44ce89b17319b8,i-0ed0106fa11d111f5,i-096fc591e9e10c920,i-0db82f08286a82a70,i-09f620a14a17920e6,i-0771fe5fdc1fc8406,i-0a44a5332b1d7dfc4,i-062288504aa3d1887,i-06d3c1ae7993992b9,i-0b1466cde74e550a9,i-05371ba854ad08db1,i-05c66519131b8cd62,i-0582c6de931684c30
- allocated      0        0        0 
-      down      0        0        0 
-```
 
 Topology for later:
 
@@ -50,7 +44,7 @@ for i in $(seq 1 20); do
 done
 ```
 
-Now container runs for lammps. This container should already be on the system.
+Now container runs for lammps. This container needs a pull to all nodes.
 
 ```bash
 cd /home/ubuntu/lammps
@@ -161,40 +155,40 @@ I sourced my bash profile and then ensured I had my nodes, and saved them too.
 kubectl get nodes
 ```
 ```console
-NAME                      STATUS   ROLES           AGE    VERSION
-u7s-i-0051360b6972b9793   Ready    <none>          31s    v1.29.1
-u7s-i-00d031d7d0229f067   Ready    <none>          31s    v1.29.1
-u7s-i-00f9aa65f556f02d9   Ready    <none>          31s    v1.29.1
-u7s-i-0100ff6d7226dc37d   Ready    <none>          31s    v1.29.1
-u7s-i-010a805233309a84c   Ready    <none>          31s    v1.29.1
-u7s-i-025dbde9417bb3475   Ready    control-plane   2m6s   v1.29.1
-u7s-i-032d81636b0368b02   Ready    <none>          31s    v1.29.1
-u7s-i-05155a38136e76e2d   Ready    <none>          31s    v1.29.1
-u7s-i-05371ba854ad08db1   Ready    <none>          30s    v1.29.1
-u7s-i-0582c6de931684c30   Ready    <none>          31s    v1.29.1
-u7s-i-05c66519131b8cd62   Ready    <none>          31s    v1.29.1
-u7s-i-05d44ce89b17319b8   Ready    <none>          31s    v1.29.1
-u7s-i-062288504aa3d1887   Ready    <none>          31s    v1.29.1
-u7s-i-062f6ef897a2d348a   Ready    <none>          31s    v1.29.1
-u7s-i-06d3c1ae7993992b9   Ready    <none>          31s    v1.29.1
-u7s-i-072271fb5d87f13ff   Ready    <none>          32s    v1.29.1
-u7s-i-0771fe5fdc1fc8406   Ready    <none>          22s    v1.29.1
-u7s-i-07e72f800aeac91ee   Ready    <none>          31s    v1.29.1
-u7s-i-08034e7752f4ff06b   Ready    <none>          31s    v1.29.1
-u7s-i-09124ea65570893e1   Ready    <none>          31s    v1.29.1
-u7s-i-096d773b3c1c4865b   Ready    <none>          30s    v1.29.1
-u7s-i-096fc591e9e10c920   Ready    <none>          30s    v1.29.1
-u7s-i-09f620a14a17920e6   Ready    <none>          30s    v1.29.1
-u7s-i-0a44a5332b1d7dfc4   Ready    <none>          31s    v1.29.1
-u7s-i-0a9e61f51088d629a   Ready    <none>          32s    v1.29.1
-u7s-i-0b0bffe6cfdddf1e0   Ready    <none>          31s    v1.29.1
-u7s-i-0b1466cde74e550a9   Ready    <none>          31s    v1.29.1
-u7s-i-0db82f08286a82a70   Ready    <none>          31s    v1.29.1
-u7s-i-0dba099e5c631312c   Ready    <none>          31s    v1.29.1
-u7s-i-0de1b95852bf44467   Ready    <none>          31s    v1.29.1
-u7s-i-0ed0106fa11d111f5   Ready    <none>          31s    v1.29.1
-u7s-i-0ed9701caad786099   Ready    <none>          30s    v1.29.1
-u7s-i-0f918aa45d74423dc   Ready    <none>          31s    v1.29.1
+NAME                      STATUS   ROLES           AGE   VERSION
+u7s-i-001a283495908a2fd   Ready    <none>          31s   v1.29.1
+u7s-i-009a06272fa6f2058   Ready    <none>          30s   v1.29.1
+u7s-i-00f719a743be592a5   Ready    <none>          31s   v1.29.1
+u7s-i-011e630ae380a3902   Ready    <none>          31s   v1.29.1
+u7s-i-016e02971902bd653   Ready    <none>          30s   v1.29.1
+u7s-i-0301cce2b29265928   Ready    <none>          30s   v1.29.1
+u7s-i-039696d8f2441c950   Ready    <none>          31s   v1.29.1
+u7s-i-04baab5d1bbc299d0   Ready    <none>          31s   v1.29.1
+u7s-i-04c715913d9e3c8b7   Ready    <none>          30s   v1.29.1
+u7s-i-050e13126f196ccda   Ready    <none>          31s   v1.29.1
+u7s-i-05342cddb1d5e588a   Ready    control-plane   99s   v1.29.1
+u7s-i-05753c08c69e09b89   Ready    <none>          31s   v1.29.1
+u7s-i-05fdfe9cfe36a2d9c   Ready    <none>          31s   v1.29.1
+u7s-i-076a2e863985642dc   Ready    <none>          28s   v1.29.1
+u7s-i-07734cd953035619e   Ready    <none>          31s   v1.29.1
+u7s-i-07749c75466498890   Ready    <none>          31s   v1.29.1
+u7s-i-07de982c53a7e1269   Ready    <none>          30s   v1.29.1
+u7s-i-08433ac2eace66b76   Ready    <none>          31s   v1.29.1
+u7s-i-0851f99a0032ba34f   Ready    <none>          31s   v1.29.1
+u7s-i-0945536058914df26   Ready    <none>          31s   v1.29.1
+u7s-i-09549f380dde16c05   Ready    <none>          31s   v1.29.1
+u7s-i-096750f3a493af595   Ready    <none>          31s   v1.29.1
+u7s-i-0a9ecc9961ce70c53   Ready    <none>          31s   v1.29.1
+u7s-i-0af3fd8b505544f7c   Ready    <none>          31s   v1.29.1
+u7s-i-0c6fc8a4eea611507   Ready    <none>          31s   v1.29.1
+u7s-i-0c8c7a993d84cb710   Ready    <none>          31s   v1.29.1
+u7s-i-0d2ee70154833869a   Ready    <none>          41s   v1.29.1
+u7s-i-0dc37689ac509d306   Ready    <none>          31s   v1.29.1
+u7s-i-0e7dcc1113c94786c   Ready    <none>          31s   v1.29.1
+u7s-i-0ec8879f3eb417a40   Ready    <none>          30s   v1.29.1
+u7s-i-0f1874ca8accbadbc   Ready    <none>          29s   v1.29.1
+u7s-i-0fb43e637f1433f4b   Ready    <none>          31s   v1.29.1
+u7s-i-0fd32d4b4de9a52fc   Ready    <none>          30s   v1.29.1
 ```
 ```bash
 kubectl get nodes -o json > ../osu/results/nodes-33.json
@@ -416,6 +410,50 @@ for i in $(seq 1 20); do
 done
 ```
 
+Finally, let's run netmark once with usernetes (I copied this script from my local machine) and then on bare metal (with usernetes running) and then without. We don't have it installed on bare metal (without container) here, but we know the container performance == bare metal host, so it should be OK. First, prepare.
+
+
+```bash
+mkdir -p /home/ubuntu/netmark/results/bare-metal-usernetes
+flux exec -r all --dir /home/ubuntu/netmark singularity pull docker://ghcr.io/rse-ops/netmark-efa:ubuntu-22.04
+flux exec -r all -x 0 mkdir -p /home/ubuntu/netmark/results/bare-metal-usernetes
+cd /home/ubuntu/netmark/results/bare-metal-usernetes
+container=/home/ubuntu/netmark/netmark-efa_ubuntu-22.04.sif 
+```
+
+Here is bare metal with usernetes running (this should be the fastest):
+
+```bash
+flux run -N 32 -ntasks 512 singularity exec $container /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
+```
+
+This is the usernetes run. We do it interactively and will copy the results files to the host
+
+```bash
+kubectl apply -f ./netmark-efa.yaml 
+kubectl exec -it flux-sample-efa-0-xxxx bash
+flux proxy local:///mnt/flux/view/run/flux/local bash
+flux resource list
+```
+
+Then run netmark, let's created a scoped output directory.
+
+```bash
+mkdir /opt/netmark
+cd /opt/netmark
+flux run -N 32 -n 512 /usr/local/bin/netmark.x -w 10 -t 20 -c 20 -b 0 -s
+```
+
+In a different terminal, copy out the results.
+
+```bash
+kubectl cp flux-sample-efa-0-xxxx:/opt/netmark ./results/usernetes
+```
+
+When you are done
+```
+kubectl delete -f ./minicluster-efa.yaml --wait=true
+```
 
 And then you are done! Copy the data, or you will be very sad. I did this at several increments, mostly worried about losing data.
 And some extra flux info:

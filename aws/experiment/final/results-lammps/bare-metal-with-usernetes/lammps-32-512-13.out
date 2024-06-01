@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.017 seconds
+  read_data CPU = 0.034 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   16 by 8 by 4 MPI processor grid
@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 17.53 out of 2048 (0.86%)
   622592 atoms
-  replicate CPU = 0.010 seconds
+  replicate CPU = 0.009 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 143.9 | 143.9 | 143.9 Mbytes
         80   298.00108     -113.27171      8403.3108     -111.57247     -1.6992334      7019230      
         90   301.69581     -113.28273      9528.4144     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.763     -111.58629     -1.6986606      7019230      
-Loop time of 15.7256 on 512 procs for 100 steps with 622592 atoms
+Loop time of 15.6006 on 512 procs for 100 steps with 622592 atoms
 
-Performance: 0.055 ns/day, 436.822 hours/ns, 6.359 timesteps/s, 3.959 Matom-step/s
+Performance: 0.055 ns/day, 433.351 hours/ns, 6.410 timesteps/s, 3.991 Matom-step/s
 99.3% CPU use with 512 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 6.4522     | 7.51       | 8.5168     |  12.3 | 47.76
-Neigh   | 0.16877    | 0.17107    | 0.17657    |   0.3 |  1.09
-Comm    | 0.12154    | 0.94349    | 2.1706     |  36.0 |  6.00
-Output  | 0.019736   | 0.069941   | 0.10578    |   8.4 |  0.44
-Modify  | 6.8754     | 7.0304     | 7.1327     |   3.4 | 44.71
-Other   |            | 0.0007626  |            |       |  0.00
+Pair    | 6.4488     | 7.5095     | 8.5717     |  12.3 | 48.14
+Neigh   | 0.16893    | 0.17111    | 0.19915    |   0.4 |  1.10
+Comm    | 0.080854   | 0.94159    | 2.1948     |  36.7 |  6.04
+Output  | 0.013391   | 0.054599   | 0.086508   |   8.9 |  0.35
+Modify  | 6.757      | 6.9231     | 7.037      |   4.0 | 44.38
+Other   |            | 0.000717   |            |       |  0.00
 
 Nlocal:           1216 ave        1225 max        1208 min
 Histogram: 3 14 67 70 144 132 36 35 7 4

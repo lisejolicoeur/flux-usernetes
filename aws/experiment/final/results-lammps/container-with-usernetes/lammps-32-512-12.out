@@ -8,7 +8,7 @@ Reading data file ...
   304 atoms
   reading velocities ...
   304 velocities
-  read_data CPU = 0.034 seconds
+  read_data CPU = 0.024 seconds
 Replication is creating a 16x16x8 = 2048 times larger system...
   triclinic box = (0 0 0) to (357.216 178.2592 110.23173) with tilt (0 -40.20824 0)
   16 by 8 by 4 MPI processor grid
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 143.9 | 143.9 | 143.9 Mbytes
         80   298.00108     -113.27171      8403.3108     -111.57247     -1.6992334      7019230      
         90   301.69581     -113.28273      9528.4144     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.763     -111.58629     -1.6986606      7019230      
-Loop time of 15.8851 on 512 procs for 100 steps with 622592 atoms
+Loop time of 15.7883 on 512 procs for 100 steps with 622592 atoms
 
-Performance: 0.054 ns/day, 441.254 hours/ns, 6.295 timesteps/s, 3.919 Matom-step/s
+Performance: 0.055 ns/day, 438.564 hours/ns, 6.334 timesteps/s, 3.943 Matom-step/s
 99.3% CPU use with 512 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 6.4946     | 7.523      | 8.5493     |  12.3 | 47.36
-Neigh   | 0.1647     | 0.16672    | 0.17986    |   0.3 |  1.05
-Comm    | 0.11909    | 0.95491    | 2.151      |  36.1 |  6.01
-Output  | 0.064128   | 0.10124    | 0.13921    |   6.4 |  0.64
-Modify  | 6.9707     | 7.1385     | 7.2372     |   3.8 | 44.94
-Other   |            | 0.000737   |            |       |  0.00
+Pair    | 6.4577     | 7.5237     | 8.5539     |  12.3 | 47.65
+Neigh   | 0.16461    | 0.16673    | 0.17138    |   0.2 |  1.06
+Comm    | 0.11351    | 0.98323    | 2.2041     |  35.0 |  6.23
+Output  | 0.015921   | 0.053134   | 0.089192   |   8.7 |  0.34
+Modify  | 6.9266     | 7.0608     | 7.1391     |   3.1 | 44.72
+Other   |            | 0.0007502  |            |       |  0.00
 
 Nlocal:           1216 ave        1225 max        1208 min
 Histogram: 3 14 67 70 144 132 36 35 7 4
