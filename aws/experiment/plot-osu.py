@@ -320,7 +320,7 @@ def parse_data(files):
             barrier_idx += 1
             continue
 
-        if "osu-bw" in filename:
+        elif "osu-bw" in filename or "osu_bw" in filename:
             result = parse_multi_section(item.split("\n"))
             for row in result["matrix"]:
                 df_bw.loc[bw_idx, :] = [
@@ -334,7 +334,7 @@ def parse_data(files):
                 bw_idx += 1
             continue
 
-        if "latency" in filename:
+        elif "latency" in filename:
             result = parse_multi_section(item.split("\n"))
             for row in result["matrix"]:
                 df_latency.loc[latency_idx, :] = [
@@ -348,7 +348,7 @@ def parse_data(files):
                 latency_idx += 1
             continue
 
-        if "reduce" in filename:
+        elif "reduce" in filename:
             result = parse_multi_section([x for x in item.split("\n") if x])
             for row in result["matrix"]:
                 df_reduce.loc[reduce_idx, :] = [
