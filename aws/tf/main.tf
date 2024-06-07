@@ -297,9 +297,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 }
 
 resource "aws_launch_template" "launch_template" {
-
-  name = "launch_template"
-
+  name = "${local.name}-launch_template"
   image_id      = local.ami
   instance_type = local.instance_type
   key_name      = local.key_name
