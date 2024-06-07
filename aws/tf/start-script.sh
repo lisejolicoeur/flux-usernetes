@@ -188,21 +188,22 @@ echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt" >> /h
 echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/startup" >> /home/ubuntu/.bashrc
 
 mkdir -p /home/ubuntu/.docker/run
-cd /home/ubuntu
 
 # In case we need to start fresh (this likely is not needed)
 # dockerd-rootless-setuptool.sh uninstall
 # /usr/bin/dockerd-rootless-setuptool.sh uninstall -f
 # /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 
-# install rootless docker and start usernetes 
-# this needs to be run interactively.
-sudo chown -R $USER /home/ubuntu
-cd /home/ubuntu/usernetes
+# Note that we clone / redo fresh - there is an issue with permissions if we do not.
+rm -rf /home/ubuntu/usernetes
 
 # Update usernetes with config with higher MTU
 rm -rf docker-compose.yaml
 wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/docker-compose.yaml
 wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/Makefile.usernetes
 mv Makefile.usernetes Makefile
+
+# install rootless docker and start usernetes 
+# this needs to be run interactively.
+sudo chown -R $USER /home/ubuntu
 cd /home/ubuntu
