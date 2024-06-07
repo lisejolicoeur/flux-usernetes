@@ -195,13 +195,10 @@ mkdir -p /home/ubuntu/.docker/run
 # /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
 
 # Note that we clone / redo fresh - there is an issue with permissions if we do not.
-rm -rf /home/ubuntu/usernetes
-
 # Update usernetes with config with higher MTU
-rm -rf docker-compose.yaml
-wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/docker-compose.yaml
-wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/Makefile.usernetes
-mv Makefile.usernetes Makefile
+cd /home/ubuntu
+wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/setup-usernetes.sh
+chmod +x setup-usernetes.sh
 
 # install rootless docker and start usernetes 
 # this needs to be run interactively.
