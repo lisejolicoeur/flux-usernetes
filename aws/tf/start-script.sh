@@ -201,7 +201,7 @@ sudo chown -R $USER /home/ubuntu
 cd /home/ubuntu/usernetes
 
 # Update usernetes with config with higher MTU
-rm -rf docker-compose.yaml Makefile
+rm -rf docker-compose.yaml
 wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/docker-compose.yaml
 wget https://raw.githubusercontent.com/converged-computing/flux-usernetes/experiment-end-june/aws/tf/Makefile.usernetes
 mv Makefile.usernetes Makefile

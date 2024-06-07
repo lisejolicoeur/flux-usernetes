@@ -6,7 +6,7 @@ locals {
   pwd       = basename(path.cwd)
   region    = "us-east-1"
   ami       = "ami-03bf34a7d8b789694"
-  placement = "eks-efa-testing"
+  placement = "performance-study"
 
   instance_type = "hpc7g.4xlarge"
   vpc_cidr      = "10.0.0.0/16"

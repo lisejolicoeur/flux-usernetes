@@ -51,9 +51,9 @@ networks:
         # Each of the nodes has to have a different IP.
         # The node IP here is not accessible from other nodes.
         - subnet: ${U7S_NODE_SUBNET}
-  driver: bridge
-  driver_opts:
-   com.docker.network.driver.mtu: 9001
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 9001
 
 volumes:
   node-var: {}
