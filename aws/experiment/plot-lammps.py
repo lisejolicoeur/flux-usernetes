@@ -79,7 +79,6 @@ def main():
     # Show means grouped by experiment to sanity check plots
     print(df.groupby(["experiment", "nodes"]).mean())
     print(df.groupby(["experiment", "nodes"]).std())
-    return 
     df.to_csv(os.path.join(outdir, "lammps-times.csv"))
     plot_results(df, outdir)
 

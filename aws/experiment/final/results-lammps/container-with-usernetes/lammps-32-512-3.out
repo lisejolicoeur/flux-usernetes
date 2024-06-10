@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 17.53 out of 2048 (0.86%)
   622592 atoms
-  replicate CPU = 0.008 seconds
+  replicate CPU = 0.010 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 143.9 | 143.9 | 143.9 Mbytes
         80   298.00108     -113.27171      8403.3108     -111.57247     -1.6992334      7019230      
         90   301.69581     -113.28273      9528.4144     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.763     -111.58629     -1.6986606      7019230      
-Loop time of 15.8071 on 512 procs for 100 steps with 622592 atoms
+Loop time of 16.0077 on 512 procs for 100 steps with 622592 atoms
 
-Performance: 0.055 ns/day, 439.087 hours/ns, 6.326 timesteps/s, 3.939 Matom-step/s
+Performance: 0.054 ns/day, 444.657 hours/ns, 6.247 timesteps/s, 3.889 Matom-step/s
 99.3% CPU use with 512 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 6.4784     | 7.5232     | 8.556      |  12.3 | 47.59
-Neigh   | 0.16471    | 0.16677    | 0.18221    |   0.3 |  1.06
-Comm    | 0.12982    | 0.97982    | 2.1997     |  35.7 |  6.20
-Output  | 0.013261   | 0.051859   | 0.084929   |   8.7 |  0.33
-Modify  | 6.9338     | 7.0847     | 7.2083     |   3.7 | 44.82
-Other   |            | 0.0007414  |            |       |  0.00
+Pair    | 6.4608     | 7.523      | 8.5436     |  12.4 | 47.00
+Neigh   | 0.16501    | 0.16671    | 0.1704     |   0.2 |  1.04
+Comm    | 0.14291    | 0.96947    | 2.2004     |  36.1 |  6.06
+Output  | 0.016826   | 0.075824   | 0.11055    |   8.4 |  0.47
+Modify  | 7.1108     | 7.2717     | 7.4037     |   3.7 | 45.43
+Other   |            | 0.0009216  |            |       |  0.01
 
 Nlocal:           1216 ave        1225 max        1208 min
 Histogram: 3 14 67 70 144 132 36 35 7 4

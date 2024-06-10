@@ -101,7 +101,6 @@ def plot_results(dfs, img):
             print(df.groupby(["experiment", "nodes"]).mean())
             print(df.groupby(["experiment", "nodes"]).std())
 
-    return
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
         # Barrier we can show across nodes
@@ -263,6 +262,18 @@ def parse_data(files):
     )
     reduce_idx = 0
 
+    df_bw = pandas.DataFrame(
+        columns=[
+            "ranks",
+            "experiment",
+            "iteration",
+            "size",
+            "average_latency_us",
+            "nodes",
+        ]
+    )
+    bw_idx = 0
+
     for filename in files:
         parsed = os.path.relpath(filename, here)
         pieces = parsed.split(os.sep)
@@ -286,6 +297,7 @@ def parse_data(files):
             iteration = int(filebase.split("-")[-1].replace(".out", ""))
             nodes = int(filebase.split("-")[-2])
             tasks = nodes * 16
+        # latency and bw are pair to pair, ranks are not
         else:
             iteration = int(filebase.split("-")[-1].replace(".out", ""))
             nodes = 2
@@ -308,7 +320,21 @@ def parse_data(files):
             barrier_idx += 1
             continue
 
-        if "latency" in filename:
+        elif "osu-bw" in filename or "osu_bw" in filename:
+            result = parse_multi_section(item.split("\n"))
+            for row in result["matrix"]:
+                df_bw.loc[bw_idx, :] = [
+                    tasks,
+                    experiment,
+                    iteration,
+                    row[0],
+                    row[1],
+                    nodes,
+                ]
+                bw_idx += 1
+            continue
+
+        elif "latency" in filename:
             result = parse_multi_section(item.split("\n"))
             for row in result["matrix"]:
                 df_latency.loc[latency_idx, :] = [
@@ -322,7 +348,7 @@ def parse_data(files):
                 latency_idx += 1
             continue
 
-        if "reduce" in filename:
+        elif "reduce" in filename:
             result = parse_multi_section([x for x in item.split("\n") if x])
             for row in result["matrix"]:
                 df_reduce.loc[reduce_idx, :] = [
@@ -335,7 +361,7 @@ def parse_data(files):
                 ]
                 reduce_idx += 1
 
-    dfs = {"all_reduce": df_reduce, "latency": df_latency, "barrier": df_barrier}
+    dfs = {"all_reduce": df_reduce, "latency": df_latency, "barrier": df_barrier, "bandwidth": df_bw}
     return dfs
 
 

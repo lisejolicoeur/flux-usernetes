@@ -16,7 +16,7 @@ Replication is creating a 16x16x8 = 2048 times larger system...
   bounding box extra memory = 0.03 MB
   average # of replicas added to proc = 35.06 out of 2048 (1.71%)
   622592 atoms
-  replicate CPU = 0.021 seconds
+  replicate CPU = 0.023 seconds
 Neighbor list info ...
   update: every = 20 steps, delay = 0 steps, check = no
   max neighbors/atom: 2000, page size: 100000
@@ -51,20 +51,20 @@ Per MPI rank memory allocation (min/avg/max) = 215 | 215 | 215 Mbytes
         80   298.00109     -113.27171      8403.2984     -111.57247     -1.6992334      7019230      
         90   301.69582     -113.28273      9528.4102     -111.58383     -1.6989         7019230      
        100   302.45758     -113.28495      10433.734     -111.58629     -1.6986607      7019230      
-Loop time of 24.7941 on 256 procs for 100 steps with 622592 atoms
+Loop time of 24.675 on 256 procs for 100 steps with 622592 atoms
 
-Performance: 0.035 ns/day, 688.725 hours/ns, 4.033 timesteps/s, 2.511 Matom-step/s
+Performance: 0.035 ns/day, 685.416 hours/ns, 4.053 timesteps/s, 2.523 Matom-step/s
 99.6% CPU use with 256 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 11.531     | 13.34      | 15.085     |  18.0 | 53.80
-Neigh   | 0.26613    | 0.26938    | 0.2793     |   0.3 |  1.09
-Comm    | 0.073959   | 1.6911     | 3.6238     |  51.4 |  6.82
-Output  | 0.0072286  | 0.055493   | 0.11538    |  16.6 |  0.22
-Modify  | 9.3512     | 9.4367     | 9.5693     |   3.2 | 38.06
-Other   |            | 0.001015   |            |       |  0.00
+Pair    | 11.535     | 13.341     | 15.073     |  18.0 | 54.07
+Neigh   | 0.26627    | 0.26944    | 0.27388    |   0.3 |  1.09
+Comm    | 0.073282   | 1.6745     | 3.6099     |  51.6 |  6.79
+Output  | 0.007133   | 0.055558   | 0.1148     |  16.4 |  0.23
+Modify  | 9.2447     | 9.333      | 9.4698     |   3.3 | 37.82
+Other   |            | 0.001004   |            |       |  0.00
 
 Nlocal:           2432 ave        2445 max        2421 min
 Histogram: 1 3 39 50 53 65 28 15 1 1
