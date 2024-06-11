@@ -88,12 +88,11 @@ def plot_results(dfs, img):
     """
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
-        print(slug)
-        if slug == "latency":
+        if slug in ["latency", "bandwidth", "all_reduce"]:
             combined = df.groupby(["experiment", "size"]).mean()
-            combined.to_csv(os.path.join(img, "osu-latency-only.csv"))
+            combined.to_csv(os.path.join(img, f"osu-{slug}-only.csv"))
             combined_nodes = df.groupby(["experiment", "nodes", "size"]).mean()
-            combined_nodes.to_csv(os.path.join(img, "osu-latency-node-sizes.csv"))
+            combined_nodes.to_csv(os.path.join(img, f"osu-{slug}-node-sizes.csv"))
         if "size" in df.columns:
             print(df.groupby(["experiment", "nodes", "size"]).mean())
             print(df.groupby(["experiment", "nodes", "size"]).std())
@@ -103,6 +102,7 @@ def plot_results(dfs, img):
 
     # Save each completed data frame to file and plot!
     for slug, df in dfs.items():
+
         # Barrier we can show across nodes
         if slug == "barrier":
             # Remove usernetes from the set
@@ -113,15 +113,14 @@ def plot_results(dfs, img):
             y = "average_latency_us"
 
             # for sty in plt.style.available:
-            ax = sns.lineplot(
+            ax = sns.boxplot(
                 data=df,
                 x=x,
                 y=y,
-                markers=True,
-                dashes=True,
-                errorbar=("ci", 95),
                 hue="experiment",
                 palette="Set1",
+                linewidth=0.8,
+                whis=[5, 95],
             )
             plt.title(f"{slug} (y) as a function of size (x) across nodes")
             ax.set_xlabel("size (logscale)", fontsize=16)
@@ -129,28 +128,25 @@ def plot_results(dfs, img):
             ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize=14)
             ax.set_yticklabels(ax.get_yticks(), fontsize=14)
             plt.subplots_adjust(left=0.2, bottom=0.2)
-            plt.xscale("log")
             plt.yscale("log")
             plt.savefig(os.path.join(img, f"osu-{slug}-across-nodes.png"))
             plt.clf()
             plt.close()
 
-            ax = sns.lineplot(
+            ax = sns.boxplot(
                 data=without_usernetes,
                 x=x,
                 y=y,
-                markers=True,
-                dashes=True,
-                errorbar=("ci", 95),
                 hue="experiment",
                 palette="Set1",
+                linewidth=0.8,
+                whis=[5, 95],
             )
             plt.title(f"{slug} (y) as a function of size (x) across nodes")
             ax.set_xlabel("size (logscale)", fontsize=16)
             ax.set_ylabel("Average latency (logscale)", fontsize=16)
             ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize=14)
             ax.set_yticklabels(ax.get_yticks(), fontsize=14)
-            plt.xscale("log")
             plt.yscale("log")
             plt.subplots_adjust(left=0.2, bottom=0.2)
             plt.savefig(
@@ -170,8 +166,6 @@ def plot_results(dfs, img):
 
             # Separate x and y - latency (y) is a function of size (x)
             x = "size"
-            if slug == "barrier":
-                x = "ranks"
             y = "average_latency_us"
 
             # for sty in plt.style.available:
@@ -187,7 +181,10 @@ def plot_results(dfs, img):
             )
             plt.title(f"{slug} (y) as a function of {x} (x) on {nodes} nodes")
             ax.set_xlabel(x + " (logscale)", fontsize=16)
-            ax.set_ylabel("Average latency (logscale)", fontsize=16)
+            if slug == "bandwidth":
+                ax.set_ylabel("MB/s (logscale)", fontsize=16)            
+            else:
+                ax.set_ylabel("Average latency (logscale)", fontsize=16)
             ax.set_xticklabels(ax.get_xmajorticklabels(), fontsize=14)
             ax.set_yticklabels(ax.get_yticks(), fontsize=14)
             plt.subplots_adjust(left=0.2, bottom=0.2)
@@ -361,7 +358,12 @@ def parse_data(files):
                 ]
                 reduce_idx += 1
 
-    dfs = {"all_reduce": df_reduce, "latency": df_latency, "barrier": df_barrier, "bandwidth": df_bw}
+    dfs = {
+        "all_reduce": df_reduce,
+        "latency": df_latency,
+        "barrier": df_barrier,
+        "bandwidth": df_bw,
+    }
     return dfs
 
 
