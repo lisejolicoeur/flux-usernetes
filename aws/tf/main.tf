@@ -31,7 +31,14 @@ locals {
   # "0.0.0.0/0" allows from anywhere - update
   # this to be just your ip / collaborators
   ip_address_allowed = ["0.0.0.0/0"]
+
 }
+
+# Add our ip address to the ssh config block
+data "http" "address" {
+  url = "https://ipv4.icanhazip.com"
+}
+
 
 # Example queries to get public ip addresses or private DNS names
 # aws ec2 describe-instances --region us-east-1 --filters "Name=tag:selector,Values=flux-selector" | jq .Reservations[].Instances[].NetworkInterfaces[].PrivateIpAddress
@@ -189,11 +196,11 @@ resource "aws_security_group" "security_group" {
   }
 
   ingress {
-    description = "Allow ssh from everywhere"
+    description = "Allow ssh from deployer computer"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = local.ip_address_allowed
+    cidr_blocks = ["${chomp(data.http.address.response_body)}/32"]
   }
 
   ingress {
@@ -299,7 +306,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 }
 
 resource "aws_launch_template" "launch_template" {
-  name = "${local.name}-launch_template"
+  name          = "${local.name}-launch_template"
   image_id      = local.ami
   instance_type = local.instance_type
   key_name      = local.key_name
