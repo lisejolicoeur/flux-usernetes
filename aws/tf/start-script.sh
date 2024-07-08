@@ -155,18 +155,9 @@ sudo systemctl status flux.service
 # Just sanity check we own everything still
 sudo chown -R $USER /home/ubuntu
 
-# These won't take from the build
-echo "export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock" >> /home/ubuntu/.bashrc
-echo "export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run" >> /home/ubuntu/.bashrc
-echo "export LD_LIBRARY_PATH=/opt/amazon/efa/lib" >> /home/ubuntu/.bashrc
-
 # Not sure why it's not taking my URI request above!
 export FLUX_URI=local:///home/ubuntu/run/flux/local
 echo "export FLUX_URI=local:///home/ubuntu/run/flux/local" >> /home/ubuntu/.bashrc
-
-# For the lead broker, start usernetes
-export DOCKER_HOST=unix:///home/ubuntu/.docker/run/docker.sock
-export XDG_RUNTIME_DIR=/home/ubuntu/.docker/run
 
 # Try librdmacm
 sudo sysctl net.ipv4.conf.all.accept_local=1
@@ -187,15 +178,24 @@ echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/collective" 
 echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/pt2pt" >> /home/ubuntu/.bashrc
 echo "export PATH=$PATH:/usr/local/libexec/osu-micro-benchmarks/mpi/startup" >> /home/ubuntu/.bashrc
 
-mkdir -p /home/ubuntu/.docker/run
+# Install nerdctl - these are steps shared between host and worker
+wget https://github.com/containerd/nerdctl/releases/download/v2.0.0-beta.5/nerdctl-full-2.0.0-beta.5-linux-arm64.tar.gz
+tar Cxzvvf /home/ubuntu/.local/ nerdctl-full-2.0.0-beta.5-linux-arm64.tar.gz
+export PATH=$PATH:/home/ubuntu/.local/bin
+export XDG_RUNTIME_DIR=/run/user/1000
+export CONTAINER_ENGINE=nerdctl
+echo "export PATH=$PATH:/home/ubuntu/.local/bin" >> /home/ubuntu/.bashrc
+echo "export XDG_RUNTIME_DIR=/run/user/1000" >> /home/ubuntu/.bashrc
+echo "export CONTAINER_ENGINE=nerdctl" >> /home/ubuntu/.bashrc
+
+# Remove the old usernetes and clone the new!
+rm -rf /home/ubuntu/usernetes
+git clone -b testing-bypass https://github.com/rse-ops/usernetes /home/ubuntu/usernetes
+
+# This has a customized exec start
+cp /home/ubuntu/usernetes/extra/containerd-rootless-setuptool.sh /home/ubuntu/.local/bin/containerd-rootless-setuptool.sh
+
+# mkdir -p /home/ubuntu/.docker/run
 cd /home/ubuntu
-
-# In case we need to start fresh (this likely is not needed)
-# dockerd-rootless-setuptool.sh uninstall
-# /usr/bin/dockerd-rootless-setuptool.sh uninstall -f
-# /usr/bin/rootlesskit rm -rf /home/ubuntu/.local/share/docker
-
-# install rootless docker and start usernetes 
-# this needs to be run interactively.
 sudo chown -R $USER /home/ubuntu
 cd /home/ubuntu/usernetes
