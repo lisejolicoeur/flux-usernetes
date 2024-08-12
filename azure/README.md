@@ -125,5 +125,7 @@ At this point we need to expose infiniband on the host to the pods. This took a 
 Then you'll need to clone this repository onto your Microsoft VMs to get these configs, and:
 
 ```bash
+git clone -b add-azure https://github.com/converged-computing/flux-usernetes /home/azureuser/flux-usernetes
+cd /home/azureuser/flux-usernetes/azure/infiniband
 kubectl apply -k ./infiniband/install
 ```
