@@ -1,0 +1,23 @@
+apiVersion: flux-framework.org/v1alpha2
+kind: MiniCluster
+metadata:
+  name: flux-sample
+spec:
+  size: 4
+  interactive: true
+  flux:
+    container:
+      image: ubuntu:jammy
+      disable: true
+  containers:
+    - image: milkshake113/flux-osu
+      volumes:
+        dshm:
+          emptyDir: true
+          emptyDirMedium: "memory"
+        dev:
+          hostPath: "/dev"
+          path: "/dev"
+        sys:
+          hostPath: "/sys"
+          path: "/sys"
